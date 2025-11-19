@@ -1,0 +1,72 @@
+<!--pages/article/article.wxml-->
+<view class="article-container">
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading">加载中...</view>
+
+  <!-- 文章内容 -->
+  <view wx:elif="{{article}}" class="article-content">
+    <!-- 文章头部 -->
+    <view class="article-header">
+      <!-- 标题 -->
+      <view class="article-title">{{article.title}}</view>
+
+      <!-- 元信息 -->
+      <view class="article-meta">
+        <view class="meta-row">
+          <text class="meta-item">📅 {{article.created}}</text>
+        </view>
+        <view class="meta-row" wx:if="{{article.category}}">
+          <text class="meta-item">📂 {{article.category}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 文章正文 -->
+    <view class="article-body">
+      <block wx:for="{{contentParts}}" wx:key="index">
+        <!-- 文本内容 -->
+        <rich-text wx:if="{{item.type === 'html'}}" nodes="{{item.content}}"></rich-text>
+
+        <!-- 图片（可点击） -->
+        <image
+          wx:if="{{item.type === 'image'}}"
+          class="article-image"
+          src="{{item.src}}"
+          mode="widthFix"
+          bindtap="handleImageTap"
+          data-src="{{item.src}}"
+          show-menu-by-longpress="{{true}}"
+        ></image>
+      </block>
+    </view>
+
+    <!-- 文章标签（放在文章末尾） -->
+    <view class="article-tags-footer" wx:if="{{article.tags && article.tags.length}}">
+      <view class="tags-label">🏷️ 标签</view>
+      <view class="tags-list">
+        <text class="tag-item" wx:for="{{article.tags}}" wx:key="index">{{item}}</text>
+      </view>
+    </view>
+
+    <!-- 文章底部 -->
+    <view class="article-footer">
+      <view class="copyright">
+        <view class="copyright-title">版权声明</view>
+        <view class="copyright-text">本文作者：夜影小窝</view>
+        <view class="copyright-text">本文链接：{{articleUrl}}</view>
+        <view class="copyright-text">版权声明：本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！</view>
+      </view>
+
+      <view class="share-btn" bindtap="handleShare">
+        <text class="share-icon">🔗</text>
+        <text>复制文章链接</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载失败 -->
+  <view wx:else class="empty-state">
+    <view class="empty-icon">😕</view>
+    <view class="empty-text">文章加载失败</view>
+  </view>
+</view>

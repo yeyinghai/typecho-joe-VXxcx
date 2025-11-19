@@ -1,0 +1,50 @@
+<!--pages/tag-posts/tag-posts.wxml-->
+<view class="tag-posts-container">
+  <!-- 标签标题 -->
+  <view class="tag-header">
+    <view class="tag-title">🏷️ {{tagName}}</view>
+    <view class="tag-count">共 {{posts.length}} 篇文章</view>
+  </view>
+
+  <!-- 文章列表 -->
+  <view wx:if="{{posts.length}}" class="posts-list">
+    <view
+      class="post-item"
+      wx:for="{{posts}}"
+      wx:key="id"
+      bindtap="handlePostTap"
+      data-id="{{item.id}}"
+    >
+      <!-- 文章缩略图 -->
+      <image
+        wx:if="{{item.thumbnail}}"
+        class="post-thumbnail"
+        src="{{item.thumbnail}}"
+        mode="aspectFill"
+      ></image>
+
+      <!-- 文章内容 -->
+      <view class="post-body">
+        <view class="post-title">{{item.title}}</view>
+        <view class="post-excerpt">{{item.excerpt}}</view>
+        <view class="post-meta">
+          <text class="meta-item">📅 {{item.created}}</text>
+          <text class="meta-item" wx:if="{{item.category}}">📂 {{item.category}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 加载更多 -->
+    <view wx:if="{{loading}}" class="loading">加载中...</view>
+    <view wx:elif="{{!hasMore}}" class="no-more">没有更多了</view>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:elif="{{!loading}}" class="empty-state">
+    <view class="empty-icon">📄</view>
+    <view class="empty-text">该标签下暂无文章</view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view wx:if="{{loading && !posts.length}}" class="loading">加载中...</view>
+</view>

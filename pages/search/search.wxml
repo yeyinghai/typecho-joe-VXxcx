@@ -1,0 +1,115 @@
+<!--pages/search/search.wxml-->
+<view class="search-container">
+  <!-- 搜索框 -->
+  <view class="search-bar">
+    <view class="search-input-wrapper">
+      <input
+        class="search-input"
+        type="text"
+        placeholder="搜索文章..."
+        value="{{keyword}}"
+        bindinput="handleInput"
+        confirm-type="search"
+        bindconfirm="handleSearchButton"
+      />
+      <!-- 清除按钮 -->
+      <view wx:if="{{keyword}}" class="clear-btn" catchtap="handleClearInput">✕</view>
+      <!-- 搜索按钮 -->
+      <view class="search-icon-btn" bindtap="handleSearchButton">🔍</view>
+    </view>
+  </view>
+
+  <!-- 搜索历史 -->
+  <view class="search-history" wx:if="{{searchHistory.length && !searched}}">
+    <view class="history-header">
+      <view class="history-title">搜索历史</view>
+      <view class="history-clear" bindtap="handleClearHistory">清空</view>
+    </view>
+    <view class="history-list">
+      <view
+        class="history-item"
+        wx:for="{{searchHistory}}"
+        wx:key="index"
+        bindtap="handleHistoryTap"
+        data-keyword="{{item}}"
+      >
+        {{item}}
+      </view>
+    </view>
+  </view>
+
+  <!-- 最新文章 -->
+  <view class="latest-posts" wx:if="{{latestPosts.length && !searched}}">
+    <view class="latest-header">
+      <view class="latest-title">📰 最新文章</view>
+    </view>
+    <view class="latest-list">
+      <view
+        class="latest-item"
+        wx:for="{{latestPosts}}"
+        wx:key="id"
+        bindtap="handlePostTap"
+        data-id="{{item.id}}"
+      >
+        <image
+          wx:if="{{item.thumbnail}}"
+          class="latest-thumbnail"
+          src="{{item.thumbnail}}"
+          mode="aspectFill"
+        ></image>
+        <view class="latest-content {{item.thumbnail ? '' : 'full-width'}}">
+          <view class="latest-title-text">{{item.title}}</view>
+          <view class="latest-meta">
+            <text class="meta-item">{{item.created}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 搜索结果 -->
+  <view class="search-results" wx:if="{{searched}}">
+    <!-- 结果统计 -->
+    <view class="results-header" wx:if="{{!loading || searchResults.length}}">
+      找到 <text class="highlight">{{searchResults.length}}</text> 篇相关文章
+    </view>
+
+    <!-- 加载中 -->
+    <view wx:if="{{loading && !searchResults.length}}" class="loading">搜索中...</view>
+
+    <!-- 结果列表 -->
+    <view wx:elif="{{searchResults.length}}" class="results-list">
+      <view
+        class="result-item"
+        wx:for="{{searchResults}}"
+        wx:key="id"
+        bindtap="handlePostTap"
+        data-id="{{item.id}}"
+      >
+        <view class="result-title">{{item.title}}</view>
+        <view class="result-excerpt">{{item.excerpt}}</view>
+        <view class="result-meta">
+          <text class="meta-item">{{item.created}}</text>
+          <text class="meta-item">{{item.category}}</text>
+        </view>
+      </view>
+
+      <!-- 加载更多 -->
+      <view wx:if="{{loading}}" class="loading-more">加载中...</view>
+      <view wx:elif="{{!hasMore}}" class="no-more">没有更多了</view>
+    </view>
+
+    <!-- 无结果 -->
+    <view wx:else class="empty-state">
+      <view class="empty-icon">🔍</view>
+      <view class="empty-text">没有找到相关文章</view>
+      <view class="empty-tip">换个关键词试试吧</view>
+    </view>
+  </view>
+
+  <!-- 初始状态 -->
+  <view class="empty-state" wx:if="{{!searched && !searchHistory.length}}">
+    <view class="empty-icon">🔍</view>
+    <view class="empty-text">输入关键词搜索文章</view>
+  </view>
+</view>

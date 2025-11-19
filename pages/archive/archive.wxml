@@ -1,0 +1,36 @@
+<!--pages/archive/archive.wxml-->
+<view class="archive-container">
+  <view wx:if="{{loading}}" class="loading">加载中...</view>
+
+  <view wx:elif="{{archives.length}}" class="archive-list">
+    <view class="archive-group" wx:for="{{archives}}" wx:key="month">
+      <view
+        class="month-header {{expandedMonth === item.month ? 'expanded' : ''}}"
+        bindtap="toggleMonth"
+        data-month="{{item.month}}"
+      >
+        <view class="month-title">
+          <text class="month-text">{{item.month}}</text>
+          <text class="post-count">{{item.posts.length}} 篇</text>
+        </view>
+        <view class="arrow-icon {{expandedMonth === item.month ? 'rotate' : ''}}">▼</view>
+      </view>
+
+      <view class="posts-list {{expandedMonth === item.month ? 'show' : ''}}">
+        <view
+          class="post-item"
+          wx:for="{{item.posts}}"
+          wx:key="id"
+          wx:for-item="post"
+          bindtap="handlePostTap"
+          data-id="{{post.id}}"
+        >
+          <view class="post-date">{{post.formattedDate}}</view>
+          <view class="post-title">{{post.title}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view wx:else class="empty">暂无归档</view>
+</view>

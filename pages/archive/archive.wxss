@@ -1,0 +1,124 @@
+/* pages/archive/archive.wxss */
+.archive-container {
+  min-height: 100vh;
+  background: #f5f5f5;
+  padding: 32rpx;
+}
+
+.archive-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.archive-group {
+  background: #fff;
+  border-radius: 12rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+  transition: all 0.3s;
+}
+
+/* 月份头部 */
+.month-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 32rpx;
+  cursor: pointer;
+  transition: all 0.3s;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.month-header:active {
+  opacity: 0.8;
+}
+
+.month-header.expanded {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.month-title {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  flex: 1;
+}
+
+.month-text {
+  font-size: 18px;
+  font-weight: 600;
+  color: #fff;
+}
+
+.post-count {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4rpx 12rpx;
+  border-radius: 20rpx;
+}
+
+/* 箭头图标 */
+.arrow-icon {
+  font-size: 12px;
+  color: #fff;
+  transition: transform 0.3s ease;
+  transform-origin: center;
+}
+
+.arrow-icon.rotate {
+  transform: rotate(-180deg);
+}
+
+/* 文章列表 */
+.posts-list {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out;
+  padding: 0 32rpx;
+}
+
+.posts-list.show {
+  max-height: 5000rpx; /* 足够大的高度 */
+  padding: 32rpx;
+}
+
+.post-item {
+  padding: 20rpx;
+  background: #f9f9f9;
+  border-radius: 8rpx;
+  border-left: 4rpx solid #667eea;
+  margin-bottom: 20rpx;
+  transition: all 0.2s;
+}
+
+.post-item:last-child {
+  margin-bottom: 0;
+}
+
+.post-item:active {
+  background: #f0f0f0;
+  transform: translateX(4rpx);
+}
+
+.post-date {
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 8rpx;
+}
+
+.post-title {
+  font-size: 15px;
+  color: #333;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.loading,
+.empty {
+  text-align: center;
+  padding: 80rpx 40rpx;
+  color: #999;
+  font-size: 14px;
+}

@@ -1,0 +1,40 @@
+/* pages/tags/tags.wxss */
+.tags-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 40rpx 32rpx;
+}
+
+.tags-cloud {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16rpx;
+  padding: 40rpx;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24rpx;
+  justify-content: center;
+  align-items: center;
+}
+
+.tag-item {
+  padding: 12rpx 28rpx;
+  background: linear-gradient(135deg, #e6f7ff, #bae7ff);
+  color: #1890ff;
+  border-radius: 28rpx;
+  font-weight: 500;
+  box-shadow: 0 4rpx 12rpx rgba(24, 144, 255, 0.2);
+  transition: all 0.3s;
+}
+
+.tag-item:active {
+  transform: scale(0.95);
+  box-shadow: 0 2rpx 8rpx rgba(24, 144, 255, 0.3);
+}
+
+.loading,
+.empty {
+  text-align: center;
+  padding: 80rpx 40rpx;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+}
