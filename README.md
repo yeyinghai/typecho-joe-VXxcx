@@ -1,6 +1,7 @@
 # Typecho 博客微信小程序
 
 基于 Typecho 后端的微信小程序，支持文章展示、分类浏览、搜索、友链、关于等功能。
+![gh_f5b5e0504ad2_430](https://github.com/user-attachments/assets/916e6e62-7356-4ee9-a2d1-1d3fa1dc2dc6)
 
 ## 项目结构
 
@@ -30,6 +31,11 @@ miniprogram/
 └── project.config.json  # 项目配置
 ```
 
+## 小程序截图
+<img width="379" height="839" alt="image" src="https://github.com/user-attachments/assets/91f836bd-b2b0-470f-b3fc-cb3b9c037043" />
+<img width="381" height="839" alt="image" src="https://github.com/user-attachments/assets/175a3250-49cc-4593-95a5-82b0d35938f2" />
+<img width="382" height="843" alt="image" src="https://github.com/user-attachments/assets/f066dd35-1815-4505-8628-6b1444ca83bb" />
+
 ## 安装步骤
 
 ### 1. 安装 Typecho REST API 插件
@@ -40,10 +46,7 @@ miniprogram/
 # 进入 Typecho 插件目录
 cd /path/to/your/typecho/usr/plugins
 
-# 克隆插件
-git clone https://github.com/moefront/typecho-rest-api.git Rest
-
-# 或者下载后手动解压到 usr/plugins/Rest 目录
+# 下载后手动解压到 usr/plugins/Rest 目录
 ```
 
 **启用插件：**
@@ -52,7 +55,7 @@ git clone https://github.com/moefront/typecho-rest-api.git Rest
 3. 找到 Rest 插件，点击「启用」
 
 **验证安装：**
-访问 `https://www.yeyhome.com/api/` 应该能看到 API 文档
+访问 `https://your-site/api/` 应该能看到 API 文档
 
 ### 2. 配置小程序
 
@@ -63,10 +66,10 @@ git clone https://github.com/moefront/typecho-rest-api.git Rest
 ```javascript
 globalData: {
   // API 基础地址（修改为你的域名）
-  apiBase: 'https://www.yeyhome.com/api',
+  apiBase: 'https://your-site/api',
 
   // 网站地址
-  siteUrl: 'https://www.yeyhome.com',
+  siteUrl: 'https://your-site',
 
   // 网站信息
   siteInfo: {
