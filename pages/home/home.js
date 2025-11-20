@@ -61,6 +61,8 @@ Page({
       this.setData({ featuredLoading: true })
       console.log('开始加载随机推荐文章')
 
+      const app = getApp()
+
       // 获取较多的文章用于随机选择
       const res = await api.getPosts({ page: 1, pageSize: 50 })
       console.log('文章列表 API 返回:', res)
@@ -112,6 +114,12 @@ Page({
           if (imgMatch && imgMatch[1]) {
             thumbnail = imgMatch[1]
           }
+        }
+
+        // 如果仍然没有缩略图，使用随机图片
+        if (!thumbnail) {
+          const postId = post.cid || post.id || Math.random()
+          thumbnail = `${app.globalData.randomImageUrl}?id=${postId}`
         }
 
         // 提取摘要
@@ -216,6 +224,7 @@ Page({
       console.log('========== 开始加载文章 ==========')
       this.setData({ postsLoading: true })
 
+      const app = getApp()
       const { page } = this.data
       console.log('请求页码:', page)
 
@@ -271,6 +280,13 @@ Page({
             thumbnail = imgMatch[1]
             console.log(`  从内容提取缩略图:`, thumbnail)
           }
+        }
+
+        // 如果仍然没有缩略图，使用随机图片
+        if (!thumbnail) {
+          const postId = post.cid || post.id || Math.random()
+          thumbnail = `${app.globalData.randomImageUrl}?id=${postId}`
+          console.log(`  使用随机图片:`, thumbnail)
         }
 
         // 提取摘要
