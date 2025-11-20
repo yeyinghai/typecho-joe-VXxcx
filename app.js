@@ -15,7 +15,7 @@ App({
     // API 基础地址（未开启伪静态需要加 /index.php）
     apiBase: 'https://www.yeyhome.com/index.php/api',
     // API Token（如果需要认证）
-    apiToken: '45683968',
+    apiToken: '后台插件的token',
     // 网站地址
     siteUrl: 'https://www.yeyhome.com',
     // 网站信息（可在关于页配置）
