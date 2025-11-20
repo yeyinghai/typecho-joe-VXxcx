@@ -31,9 +31,13 @@ miniprogram/
 └── project.config.json  # 项目配置
 ```
 
-## 小程序截图
+## 小程序截图（1）
+
 <img width="310" height="585" alt="wxxcx1" src="https://github.com/user-attachments/assets/24bcc525-238b-45f2-8425-66977e249353" />
 <img width="310" height="585" alt="wxxcx2" src="https://github.com/user-attachments/assets/3d859302-292a-48c5-affa-93cbf99286d3" />
+
+## 小程序截图（2）
+
 <img width="310" height="585" alt="wxxcx3" src="https://github.com/user-attachments/assets/74c7fcea-5e5a-459f-839f-bad01ffd6c85" />
 <img width="310" height="585" alt="wxxcx4" src="https://github.com/user-attachments/assets/4c54d480-18ec-4311-a289-ff7c2a9a47d2" />
 
