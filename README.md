@@ -1,4 +1,4 @@
-<img width="310" height="585" alt="wxxcx1" src="https://github.com/user-attachments/assets/5f032efd-728c-4800-9d48-e1671354a731" /># Typecho 博客微信小程序
+# Typecho 博客微信小程序
 
 基于 Typecho 后端的微信小程序，支持文章展示、分类浏览、搜索、友链、关于等功能。
 ![gh_f5b5e0504ad2_430](https://github.com/user-attachments/assets/916e6e62-7356-4ee9-a2d1-1d3fa1dc2dc6)
@@ -33,9 +33,10 @@ miniprogram/
 
 ## 小程序截图
 <img width="310" height="585" alt="wxxcx1" src="https://github.com/user-attachments/assets/24bcc525-238b-45f2-8425-66977e249353" />
-<img width="379" height="839" alt="image" src="https://github.com/user-attachments/assets/91f836bd-b2b0-470f-b3fc-cb3b9c037043" />
-<img width="381" height="839" alt="image" src="https://github.com/user-attachments/assets/175a3250-49cc-4593-95a5-82b0d35938f2" />
-<img width="382" height="843" alt="image" src="https://github.com/user-attachments/assets/f066dd35-1815-4505-8628-6b1444ca83bb" />
+<img width="310" height="585" alt="wxxcx2" src="https://github.com/user-attachments/assets/3d859302-292a-48c5-affa-93cbf99286d3" />
+<img width="310" height="585" alt="wxxcx3" src="https://github.com/user-attachments/assets/74c7fcea-5e5a-459f-839f-bad01ffd6c85" />
+<img width="310" height="585" alt="wxxcx4" src="https://github.com/user-attachments/assets/4c54d480-18ec-4311-a289-ff7c2a9a47d2" />
+
 
 ## 安装步骤
 
