@@ -1,0 +1,85 @@
+<!--pages/home/home.wxml-->
+<view class="home-container">
+  <!-- 推荐文章区域 -->
+  <view class="section featured-section">
+    <view class="section-header">
+      <text class="section-title">📌 推荐阅读</text>
+    </view>
+
+    <view wx:if="{{featuredLoading}}" class="loading">加载中...</view>
+
+    <view wx:elif="{{featuredPosts.length}}" class="featured-list">
+      <swiper class="featured-swiper" indicator-dots indicator-color="rgba(255,255,255,0.5)" indicator-active-color="#fff" circular autoplay interval="5000">
+        <swiper-item wx:for="{{featuredPosts}}" wx:key="id">
+          <view class="featured-item" bindtap="handlePostTap" data-id="{{item.id}}">
+            <image wx:if="{{item.thumbnail}}" class="featured-image" src="{{item.thumbnail}}" mode="aspectFill"></image>
+            <view class="featured-content">
+              <view class="featured-title">{{item.title}}</view>
+            </view>
+          </view>
+        </swiper-item>
+      </swiper>
+    </view>
+
+    <view wx:else class="empty">暂无推荐文章</view>
+  </view>
+
+  <!-- 分类统计区域 -->
+  <view class="section categories-section">
+    <view class="section-header">
+      <text class="section-title">📂 文章分类</text>
+    </view>
+
+    <view wx:if="{{categoriesLoading}}" class="loading">加载中...</view>
+
+    <scroll-view wx:elif="{{categories.length}}" class="categories-scroll" scroll-x>
+      <view class="categories-list">
+        <view class="category-card" wx:for="{{categories}}" wx:key="mid" bindtap="handleCategoryTap" data-id="{{item.mid || item.id}}">
+          <!-- 背景图片区域 -->
+          <view class="category-bg" style="background-image: url('{{item.bgImage}}');">
+            <!-- 中间显示分类名称 -->
+            <view class="category-name-overlay">{{item.name}}</view>
+            <!-- 左下角显示文章数量 -->
+            <view class="category-count-badge">{{item.count || 0}} 篇</view>
+          </view>
+        </view>
+      </view>
+    </scroll-view>
+
+    <view wx:else class="empty">暂无分类</view>
+  </view>
+
+  <!-- 文章列表 -->
+  <view class="section posts-section">
+    <view class="section-header">
+      <text class="section-title">📝 最新文章</text>
+    </view>
+
+    <!-- 调试信息 -->
+    <view wx:if="{{!postsLoading && posts.length === 0}}" class="empty">
+      <text>暂无文章数据</text>
+    </view>
+
+    <view wx:if="{{posts.length > 0}}" class="posts-list">
+      <view class="post-item" wx:for="{{posts}}" wx:key="id" bindtap="handlePostTap" data-id="{{item.id}}">
+        <!-- 左侧缩略图 -->
+        <image wx:if="{{item.thumbnail}}" class="post-thumb" src="{{item.thumbnail}}" mode="aspectFill"></image>
+        <view wx:else class="post-thumb-placeholder">暂无图片</view>
+
+        <!-- 右侧内容 -->
+        <view class="post-info">
+          <view class="post-title">{{item.title}}</view>
+          <view class="post-excerpt">{{item.excerpt}}</view>
+          <view class="post-meta">
+            <text class="meta-item">{{item.created}}</text>
+            <text class="meta-item" wx:if="{{item.views !== undefined}}">👁️ {{item.views}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 加载更多 -->
+    <view wx:if="{{postsLoading}}" class="loading">加载中...</view>
+    <view wx:elif="{{!hasMore && posts.length}}" class="no-more">没有更多了</view>
+  </view>
+</view>

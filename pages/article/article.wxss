@@ -1,0 +1,178 @@
+/* pages/article/article.wxss */
+.article-container {
+  min-height: 100vh;
+  background: #fff;
+}
+
+/* 文章头部 */
+.article-header {
+  padding: 40rpx 32rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.article-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #333;
+  line-height: 1.4;
+  margin-bottom: 24rpx;
+}
+
+.article-meta {
+  margin-bottom: 20rpx;
+}
+
+.meta-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 24rpx;
+  margin-bottom: 12rpx;
+  font-size: 13px;
+  color: #999;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+}
+
+/* 文章正文 */
+.article-body {
+  padding: 32rpx;
+  font-size: 16px;
+  line-height: 1.8;
+  color: #333;
+  word-break: break-word;
+}
+
+/* 文章中的图片 */
+.article-image {
+  width: 100%;
+  display: block;
+  margin: 24rpx 0;
+  border-radius: 8rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+  transition: all 0.3s;
+}
+
+.article-image:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+/* 注意：rich-text 组件内部样式无法通过外部 CSS 控制 */
+/* 需要在 JS 中处理 HTML 内容，添加内联样式 */
+
+/* 文章末尾标签区域 */
+.article-tags-footer {
+  margin: 0 32rpx 24rpx;
+  padding: 24rpx;
+  background: #f9f9f9;
+  border-radius: 12rpx;
+  border: 1rpx solid #f0f0f0;
+}
+
+.tags-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 16rpx;
+}
+
+.tags-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+}
+
+.tag-item {
+  padding: 8rpx 16rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  font-size: 13px;
+  border-radius: 20rpx;
+  box-shadow: 0 2rpx 8rpx rgba(102, 126, 234, 0.2);
+}
+
+/* 文章底部 */
+.article-footer {
+  padding: 32rpx;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.copyright {
+  padding: 24rpx;
+  background: #fff7e6;
+  border-left: 4rpx solid #ffa940;
+  border-radius: 8rpx;
+  margin-bottom: 24rpx;
+}
+
+.copyright-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #d46b08;
+  margin-bottom: 12rpx;
+}
+
+.copyright-text {
+  font-size: 13px;
+  color: #8c8c8c;
+  line-height: 1.8;
+  margin-bottom: 6rpx;
+  word-break: break-all;
+}
+
+.copyright-text:last-child {
+  margin-bottom: 0;
+}
+
+.share-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border-radius: 12rpx;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.share-btn:active {
+  opacity: 0.8;
+}
+
+.share-icon {
+  margin-right: 12rpx;
+  font-size: 18px;
+}
+
+/* 加载状态 */
+.loading {
+  text-align: center;
+  padding: 80rpx 40rpx;
+  color: #999;
+  font-size: 14px;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 40rpx;
+  color: #999;
+}
+
+.empty-icon {
+  font-size: 64px;
+  margin-bottom: 20rpx;
+  opacity: 0.3;
+}
+
+.empty-text {
+  font-size: 14px;
+}

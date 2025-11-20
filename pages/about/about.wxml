@@ -1,0 +1,135 @@
+<!--pages/about/about.wxml-->
+<view class="about-container">
+  <!-- 个人信息区域 -->
+  <view class="profile-section">
+    <image class="profile-avatar" src="{{profile.avatar}}" mode="aspectFill"></image>
+    <view class="profile-name">{{profile.name}}</view>
+    <view class="profile-description">{{profile.description}}</view>
+  </view>
+
+  <!-- 关于项目按钮 -->
+  <view class="project-btn-section">
+    <view class="project-btn" bindtap="handleProject">
+      <text class="project-btn-icon">📦</text>
+      <text class="project-btn-text">关于项目</text>
+      <text class="project-btn-hand">👆</text>
+    </view>
+  </view>
+
+  <!-- 网站统计 -->
+  <view class="stats-section">
+    <view class="stats-grid">
+      <view class="stat-item">
+        <view class="stat-value">{{stats.postsCount}}</view>
+        <view class="stat-label">文章</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value">{{stats.categoriesCount}}</view>
+        <view class="stat-label">分类</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value">{{stats.tagsCount}}</view>
+        <view class="stat-label">标签</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-value {{stats.viewsColorClass}}">{{stats.totalViews}}</view>
+        <view class="stat-label">访客</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能按钮 -->
+  <view class="actions-section">
+    <view class="actions-row">
+      <view class="action-card" bindtap="handleArchive">
+        <view class="action-icon">📚</view>
+        <view class="action-text">文章归档</view>
+      </view>
+      <view class="action-card" bindtap="handleTags">
+        <view class="action-icon">🏷️</view>
+        <view class="action-text">标签云</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 联系方式 -->
+  <view class="contacts-section">
+    <view class="section-title">📮 联系博主</view>
+
+    <view class="contacts-grid">
+      <!-- QQ -->
+      <view
+        class="contact-item"
+        wx:if="{{contacts.qq}}"
+        bindtap="handleCopyContact"
+        data-type="qq"
+        data-value="{{contacts.qq}}"
+      >
+        <view class="contact-icon" style="background: linear-gradient(135deg, #12B7F5, #0E9FE5);">QQ</view>
+        <view class="contact-value">{{contacts.qq}}</view>
+      </view>
+
+      <!-- 微信 -->
+      <view
+        class="contact-item"
+        wx:if="{{contacts.wechat}}"
+        bindtap="handleCopyContact"
+        data-type="wechat"
+        data-value="{{contacts.wechat}}"
+      >
+        <view class="contact-icon" style="background: linear-gradient(135deg, #09BB07, #078E05);">微信</view>
+        <view class="contact-value">{{contacts.wechat}}</view>
+      </view>
+
+      <!-- GitHub -->
+      <view
+        class="contact-item"
+        wx:if="{{contacts.github}}"
+        bindtap="handleCopyContact"
+        data-type="github"
+        data-value="{{contacts.github}}"
+      >
+        <view class="contact-icon" style="background: linear-gradient(135deg, #333, #24292e);">GH</view>
+        <view class="contact-value">{{contacts.github}}</view>
+      </view>
+
+      <!-- Gitee -->
+      <view
+        class="contact-item"
+        wx:if="{{contacts.gitee}}"
+        bindtap="handleCopyContact"
+        data-type="gitee"
+        data-value="{{contacts.gitee}}"
+      >
+        <view class="contact-icon" style="background: linear-gradient(135deg, #C71D23, #A01419);">GE</view>
+        <view class="contact-value">{{contacts.gitee}}</view>
+      </view>
+
+      <!-- 博客 -->
+      <view
+        class="contact-item"
+        wx:if="{{contacts.blog}}"
+        bindtap="handleCopyContact"
+        data-type="blog"
+        data-value="{{contacts.blog}}"
+      >
+        <view class="contact-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">博客</view>
+        <view class="contact-value text-ellipsis">{{contacts.blog}}</view>
+      </view>
+
+      <!-- 邮箱 -->
+      <view
+        class="contact-item"
+        wx:if="{{contacts.email}}"
+        bindtap="handleCopyContact"
+        data-type="email"
+        data-value="{{contacts.email}}"
+      >
+        <view class="contact-icon" style="background: linear-gradient(135deg, #FFA500, #FF8C00);">邮箱</view>
+        <view class="contact-value">{{contacts.email}}</view>
+      </view>
+    </view>
+
+    <view class="contacts-tip">点击即可复制到剪贴板</view>
+  </view>
+</view>

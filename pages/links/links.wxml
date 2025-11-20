@@ -1,0 +1,74 @@
+<!--pages/links/links.wxml-->
+<view class="links-container">
+  <!-- 页面头部 -->
+  <view class="links-header">
+    <view class="header-title">🔗 友情链接</view>
+    <view class="header-desc">与优秀的博主们互相链接</view>
+  </view>
+
+  <!-- 我的站点信息 -->
+  <view class="my-site-section">
+    <view class="section-title">✨ 本站信息</view>
+    <view class="my-site-card">
+      <image class="my-site-logo" src="{{mySite.logo}}" mode="aspectFill"></image>
+      <view class="my-site-info">
+        <view class="my-site-name">{{mySite.name}}</view>
+        <view class="my-site-url">{{mySite.url}}</view>
+        <view class="my-site-description">{{mySite.description}}</view>
+      </view>
+    </view>
+    <view class="copy-btn-group">
+      <button class="copy-btn" bindtap="handleCopyInfo" data-type="all">
+        <text class="btn-icon">📋</text>
+        <text>复制全部信息</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading">加载中...</view>
+
+  <!-- 友链列表 -->
+  <view wx:elif="{{links.length}}" class="links-section">
+    <view class="section-title">🌐 友链列表</view>
+    <view class="links-list">
+      <view
+        class="link-card"
+        wx:for="{{links}}"
+        wx:key="index"
+        bindtap="handleLinkTap"
+        data-url="{{item.url}}"
+        data-name="{{item.name}}"
+      >
+        <!-- 头像 -->
+        <image
+          class="link-avatar"
+          src="{{item.avatar || '/assets/avatar.png'}}"
+          mode="aspectFill"
+        ></image>
+
+        <!-- 信息 -->
+        <view class="link-info">
+          <view class="link-name">{{item.name}}</view>
+          <view class="link-description">{{item.description || '暂无描述'}}</view>
+          <view class="link-url">{{item.url}}</view>
+        </view>
+
+        <!-- 箭头图标 -->
+        <view class="link-arrow">→</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 空状态 -->
+  <view wx:else class="empty-state">
+    <view class="empty-icon">🔗</view>
+    <view class="empty-text">暂无友情链接</view>
+  </view>
+
+  <!-- 申请友链提示 -->
+  <view class="apply-tip" wx:if="{{!loading}}">
+    <view class="tip-text">💡 想要交换友链？</view>
+    <view class="tip-desc">请使用上方的站点信息，前往博客留言或通过邮件联系</view>
+  </view>
+</view>

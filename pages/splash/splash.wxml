@@ -1,0 +1,33 @@
+<!--pages/splash/splash.wxml-->
+<view class="splash-container">
+  <!-- 开门效果 - 左门 -->
+  <view class="door door-left {{doorOpening ? 'opening' : ''}}"></view>
+  <!-- 开门效果 - 右门 -->
+  <view class="door door-right {{doorOpening ? 'opening' : ''}}"></view>
+
+  <!-- 发光效果 -->
+  <view class="glow-effect {{doorOpening ? 'active' : ''}}"></view>
+
+  <view class="splash-content">
+    <!-- Logo -->
+    <view class="logo-wrapper">
+      <image class="logo" src="{{logoUrl}}" mode="aspectFit"></image>
+    </view>
+
+    <!-- 应用名称 -->
+    <view class="app-name">{{appName}}</view>
+
+    <!-- 应用描述 -->
+    <view class="app-desc">{{appDesc}}</view>
+
+    <!-- 进入按钮 -->
+    <view class="enter-btn" bindtap="handleEnter">
+      进入小程序
+    </view>
+  </view>
+
+  <!-- 底部装饰 -->
+  <view class="splash-footer">
+    <view class="footer-text">Powered by Typecho</view>
+  </view>
+</view>

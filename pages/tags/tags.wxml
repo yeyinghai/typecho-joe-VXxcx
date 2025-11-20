@@ -1,0 +1,21 @@
+<!--pages/tags/tags.wxml-->
+<view class="tags-container">
+  <view wx:if="{{loading}}" class="loading">加载中...</view>
+
+  <view wx:elif="{{tags.length}}" class="tags-cloud">
+    <view
+      class="tag-item"
+      wx:for="{{tags}}"
+      wx:key="mid"
+      bindtap="handleTagTap"
+      data-id="{{item.mid || item.id}}"
+      data-slug="{{item.slug}}"
+      data-name="{{item.name}}"
+      style="font-size: {{item.fontSize}}px;"
+    >
+      {{item.name}} ({{item.count || 0}})
+    </view>
+  </view>
+
+  <view wx:else class="empty">暂无标签</view>
+</view>
