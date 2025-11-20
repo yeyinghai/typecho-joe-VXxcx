@@ -63,8 +63,7 @@
     <view wx:if="{{posts.length > 0}}" class="posts-list">
       <view class="post-item" wx:for="{{posts}}" wx:key="id" bindtap="handlePostTap" data-id="{{item.id}}">
         <!-- 左侧缩略图 -->
-        <image wx:if="{{item.thumbnail}}" class="post-thumb" src="{{item.thumbnail}}" mode="aspectFill"></image>
-        <view wx:else class="post-thumb-placeholder">暂无图片</view>
+        <image class="post-thumb" src="{{item.thumbnail}}" mode="aspectFill"></image>
 
         <!-- 右侧内容 -->
         <view class="post-info">
