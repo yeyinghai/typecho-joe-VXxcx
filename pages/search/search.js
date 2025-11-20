@@ -49,6 +49,7 @@ Page({
       console.log('解析后的最新文章数量:', posts.length)
 
       // 处理文章数据
+      const app = getApp()
       posts = posts.map((post, index) => {
         console.log(`\n========== 处理文章 ${index + 1}: ${post.title} ==========`)
 
@@ -93,6 +94,13 @@ Page({
             thumbnail = imgMatch[1]
             console.log('从内容提取的图片:', thumbnail)
           }
+        }
+
+        // 如果仍然没有缩略图，使用随机图片
+        if (!thumbnail || (typeof thumbnail === 'string' && !thumbnail.trim())) {
+          const postId = post.cid || post.id || Math.random()
+          thumbnail = `${app.globalData.randomImageUrl}?id=${postId}`
+          console.log('使用随机图片:', thumbnail)
         }
 
         // 确保 thumbnail 是字符串
