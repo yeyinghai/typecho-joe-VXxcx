@@ -130,7 +130,7 @@ globalData: {
 1. 登录 [微信小程序后台](https://mp.weixin.qq.com)
 2. 进入「开发」→「开发管理」→「开发设置」
 3. 找到「服务器域名」
-4. 在「request 合法域名」中添加：`https://www.yeyhome.com`
+4. 在「request 合法域名」中添加：`https://your-site`
 
 ⚠️ **注意：**
 - 小程序只支持 HTTPS 请求
@@ -145,18 +145,7 @@ globalData: {
 
 1. 在 Typecho 后台创建新页面
 2. 设置页面缩略名（slug）为 `links`
-3. 在内容中添加友链数据（JSON 格式）：
-
-```json
-[
-  {
-    "name": "博客名称",
-    "url": "https://example.com",
-    "description": "博客描述",
-    "avatar": "https://example.com/avatar.png"
-  }
-]
-```
+3. 主题后台按要求添加好友联，小程序自动更新获取
 
 **方式二：修改代码使用临时数据**
 
