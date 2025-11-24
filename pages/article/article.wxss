@@ -93,6 +93,12 @@
   font-size: 13px;
   border-radius: 20rpx;
   box-shadow: 0 2rpx 8rpx rgba(102, 126, 234, 0.2);
+  transition: all 0.3s;
+}
+
+.tag-item:active {
+  transform: scale(0.95);
+  opacity: 0.8;
 }
 
 /* 文章底部 */
@@ -176,3 +182,678 @@
 .empty-text {
   font-size: 14px;
 }
+
+/* ==================== 短代码样式 ==================== */
+
+/* 任务列表复选框 */
+.joe_checkbox {
+  display: inline-block;
+  position: relative;
+  width: 15px;
+  height: 15px;
+  border: 2rpx solid #409eff;
+  border-radius: 2rpx;
+  vertical-align: -2px;
+  margin-right: 6rpx;
+}
+
+.joe_checkbox--checked {
+  background: #409eff;
+  border: none;
+}
+
+.joe_checkbox--checked::after {
+  content: "✓";
+  position: absolute;
+  top: -2rpx;
+  left: 2rpx;
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* 跑马灯 */
+.joe_lamp {
+  display: block;
+  width: 100%;
+  height: 3px;
+  border-radius: 1.5px;
+  overflow: hidden;
+  margin: 12rpx 0;
+  background: linear-gradient(90deg, #54b5db, #da4733, #3b78e7, #fdba2c);
+  background-size: 400% 100%;
+  animation: lamp-animation 4s linear infinite;
+}
+
+@keyframes lamp-animation {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+/* 进度条 */
+.joe_progress {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  margin: 12rpx 0;
+}
+
+.joe_progress__strip {
+  height: 12px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #ebeef5;
+  min-width: 0;
+  flex: 1;
+  margin-right: 10px;
+}
+
+.joe_progress__strip-percent {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.35s;
+  position: relative;
+}
+
+.joe_progress__percentage {
+  color: #909399;
+  font-size: 12px;
+}
+
+/* 居中标题 */
+.joe_mtitle {
+  display: flex;
+  justify-content: center;
+  margin: 24rpx 0;
+}
+
+.joe_mtitle__text {
+  position: relative;
+  color: #909399;
+  padding: 0 24rpx;
+  font-size: 15px;
+}
+
+.joe_mtitle__text::before,
+.joe_mtitle__text::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 40rpx;
+  height: 1px;
+  background: #409eff;
+}
+
+.joe_mtitle__text::before { left: -50rpx; }
+.joe_mtitle__text::after { right: -50rpx; }
+
+/* 消息提示 */
+.joe_message {
+  display: block;
+  position: relative;
+  border-left-width: 4rpx;
+  border-left-style: solid;
+  padding: 16rpx 24rpx;
+  border-radius: 0 8rpx 8rpx 0;
+  margin: 12rpx 0;
+  line-height: 1.6;
+}
+
+.joe_message__icon {
+  position: absolute;
+  top: -8rpx;
+  left: -12rpx;
+  width: 18rpx;
+  height: 18rpx;
+  border-radius: 50%;
+}
+
+.joe_message.success {
+  border-left-color: #2bde3f;
+  background: rgba(43, 222, 63, 0.1);
+  color: #2bde3f;
+}
+
+.joe_message.success .joe_message__icon { background: #2bde3f; }
+
+.joe_message.info {
+  border-left-color: #1d72f3;
+  background: rgba(29, 114, 243, 0.1);
+  color: #1d72f3;
+}
+
+.joe_message.info .joe_message__icon { background: #1d72f3; }
+
+.joe_message.warning {
+  border-left-color: #ffc007;
+  background: rgba(255, 192, 7, 0.1);
+  color: #ffc007;
+}
+
+.joe_message.warning .joe_message__icon { background: #ffc007; }
+
+.joe_message.error {
+  border-left-color: #f56c6c;
+  background: rgba(245, 108, 108, 0.1);
+  color: #f56c6c;
+}
+
+.joe_message.error .joe_message__icon { background: #f56c6c; }
+
+/* 标注 */
+.joe_callout {
+  padding: 24rpx;
+  border: 1rpx solid #ebeef5;
+  border-left-width: 4rpx;
+  border-radius: 8rpx;
+  color: #606266;
+  line-height: 1.6;
+  margin: 12rpx 0;
+}
+
+/* 提示框 */
+.joe_alert {
+  padding: 24rpx;
+  border-radius: 8rpx;
+  line-height: 1.6;
+  margin: 12rpx 0;
+  background: transparent;
+  color: #606266;
+}
+
+.joe_alert.info { border: 1rpx solid #abdcff; }
+.joe_alert.success { border: 1rpx solid #8ce6b0; }
+.joe_alert.warning { border: 1rpx solid #ffd77a; }
+.joe_alert.error { border: 1rpx solid #ffb08f; }
+
+/* 多彩按钮 */
+.joe_abtn {
+  display: inline-block;
+  color: #fff;
+  height: 35px;
+  line-height: 35px;
+  padding: 0 24rpx;
+  border-radius: 6rpx;
+  margin: 8rpx;
+}
+
+.joe_abtn__icon {
+  display: inline-block;
+  vertical-align: top;
+  margin-right: 8rpx;
+}
+
+.joe_abtn__content {
+  color: #fff;
+  display: inline-block;
+  vertical-align: top;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 便条按钮 */
+.joe_anote {
+  position: relative;
+  display: inline-block;
+  color: #fff;
+  height: 35px;
+  line-height: 35px;
+  border-radius: 6rpx;
+  margin: 8rpx;
+}
+
+.joe_anote__icon {
+  display: inline-block;
+  vertical-align: top;
+  width: 35px;
+  height: 35px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.joe_anote__content {
+  display: inline-block;
+  vertical-align: top;
+  padding: 0 24rpx;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #fff;
+}
+
+.joe_anote.secondary { background: #34495e; }
+.joe_anote.success { background: #27ae60; }
+.joe_anote.warning { background: #f39c12; }
+.joe_anote.error { background: #e74c3c; }
+.joe_anote.info { background: #3498db; }
+
+/* 复制文本 */
+.joe_copy {
+  color: #409eff;
+  cursor: pointer;
+  padding: 4rpx 8rpx;
+  background: #f0f9ff;
+  border-radius: 4rpx;
+}
+
+/* 默认卡片 */
+.joe_card__default {
+  margin: 12rpx 0;
+  box-shadow: 0 2rpx 12rpx 0 rgba(0, 0, 0, 0.1);
+  border-radius: 8rpx;
+  border: 1rpx solid #ebeef5;
+  background: #fff;
+  line-height: 1.6;
+}
+
+.joe_card__default-title {
+  padding: 16rpx 20rpx;
+  border-bottom: 1rpx solid #ebeef5;
+  color: #303133;
+  font-weight: 600;
+}
+
+.joe_card__default-content {
+  padding: 20rpx;
+  color: #606266;
+}
+
+/* 描述卡片 */
+.joe_card__describe {
+  position: relative;
+  border: 1rpx dashed #dcdfe6;
+  border-radius: 8rpx;
+  line-height: 1.6;
+  margin: 12rpx 0;
+  padding-top: 24rpx;
+}
+
+.joe_card__describe-title {
+  position: absolute;
+  top: 0;
+  left: 16rpx;
+  transform: translateY(-50%);
+  background: #fff;
+  padding: 0 10rpx;
+  color: #303133;
+  font-weight: 500;
+  max-width: 400rpx;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.joe_card__describe-content {
+  color: #606266;
+  padding: 12rpx 30rpx 30rpx;
+}
+
+/* 卡片列表 */
+.joe_card__list {
+  border: 1rpx solid #ebeef5;
+  border-radius: 8rpx;
+  overflow: hidden;
+  line-height: 1.6;
+  margin: 12rpx 0;
+}
+
+.joe_card__list-item {
+  padding: 24rpx;
+  border-bottom: 1rpx solid #ebeef5;
+}
+
+.joe_card__list-item:last-child {
+  border-bottom: none;
+}
+
+/* 回复可见 */
+.joe_hide {
+  display: block;
+  background: repeating-linear-gradient(145deg, #f2f6fc, #f2f6fc 30rpx, #fff 0, #fff 50rpx);
+  padding: 30rpx 0;
+  text-align: center;
+  margin: 12rpx 0;
+  border-radius: 8rpx;
+}
+
+.joe_hide__button {
+  color: #409eff;
+  font-size: 14px;
+}
+
+/* 云盘下载 */
+.joe_cloud {
+  display: flex;
+  align-items: center;
+  padding: 20rpx;
+  border: 1rpx solid #ebeef5;
+  border-radius: 8rpx;
+  overflow: hidden;
+  margin: 12rpx 0;
+  transition: all 0.3s;
+  background: #fff;
+}
+
+.joe_cloud:active {
+  background: #f5f7fa;
+  transform: scale(0.98);
+}
+
+.joe_cloud__logo {
+  flex-shrink: 0;
+  width: 64rpx;
+  height: 64rpx;
+  margin-right: 20rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  box-shadow: 0 4rpx 12rpx rgba(102, 126, 234, 0.3);
+}
+
+/* 不同云盘类型的背景色 */
+.joe_cloud__logo._bd {
+  background: linear-gradient(135deg, #2175f3 0%, #0e5fd8 100%);
+}
+
+.joe_cloud__logo._ty {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+}
+
+.joe_cloud__logo._360 {
+  background: linear-gradient(135deg, #4ecca3 0%, #2ecc71 100%);
+}
+
+.joe_cloud__logo._ct {
+  background: linear-gradient(135deg, #ffa940 0%, #fa8c16 100%);
+}
+
+.joe_cloud__logo._wy {
+  background: linear-gradient(135deg, #13c2c2 0%, #08979c 100%);
+}
+
+.joe_cloud__logo._github {
+  background: linear-gradient(135deg, #333 0%, #24292e 100%);
+}
+
+.joe_cloud__logo._lz {
+  background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+}
+
+.joe_cloud__describe {
+  line-height: normal;
+  flex: 1;
+  overflow: hidden;
+}
+
+.joe_cloud__describe-title {
+  color: #409eff;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.joe_cloud__describe-type {
+  font-size: 13px;
+  color: #909399;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.joe_cloud__btn {
+  flex-shrink: 0;
+  margin-left: 16rpx;
+  background: #409eff;
+  color: #fff;
+  width: 56rpx;
+  height: 56rpx;
+  line-height: 56rpx;
+  border-radius: 50%;
+  text-align: center;
+  font-size: 24rpx;
+  font-weight: bold;
+  box-shadow: 0 4rpx 12rpx rgba(64, 158, 255, 0.3);
+}
+
+/* 时间轴 */
+.joe_timeline {
+  line-height: 1.6;
+  margin: 12rpx 0;
+  padding: 20rpx 0;
+}
+
+.joe_timeline__item {
+  position: relative;
+  padding-bottom: 30rpx;
+  padding-left: 48rpx;
+}
+
+.joe_timeline__item-tail {
+  position: absolute;
+  top: 0;
+  left: 14rpx;
+  height: 100%;
+  border-left: 1rpx solid #e4e7ed;
+}
+
+.joe_timeline__item-circle {
+  position: absolute;
+  left: 7rpx;
+  top: 4rpx;
+  width: 13px;
+  height: 13px;
+  background-color: #fff;
+  border-radius: 50%;
+  border: 1rpx solid #19be6b;
+}
+
+.joe_timeline__item-content {
+  position: relative;
+  color: #606266;
+}
+
+.joe_timeline__item:last-child .joe_timeline__item-tail {
+  display: none;
+}
+
+/* 宫格 */
+.joe_gird {
+  display: grid;
+  line-height: 1.6;
+  margin: 12rpx 0;
+}
+
+.joe_gird__item {
+  padding: 20rpx;
+  border: 1rpx solid #ebeef5;
+  border-radius: 8rpx;
+  background: #f9f9f9;
+}
+
+/* 标签页 */
+.joe_tabs {
+  width: 100%;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.1);
+  border: 1rpx solid #ebeef5;
+  border-radius: 8rpx;
+  line-height: 1.6;
+  margin: 12rpx 0;
+}
+
+.joe_tabs__head {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  display: flex;
+  background: #f2f6fc;
+}
+
+.joe_tabs__head-item {
+  position: relative;
+  padding: 0 30rpx;
+  line-height: 80rpx;
+  height: 80rpx;
+  color: #909399;
+  transition: color 0.3s;
+  white-space: nowrap;
+  font-size: 14px;
+}
+
+.joe_tabs__head-item::after {
+  content: "";
+  position: absolute;
+  background: #409eff;
+  bottom: 0;
+  left: 30rpx;
+  right: 30rpx;
+  height: 2rpx;
+  opacity: 0;
+  border-radius: 2rpx;
+  transform: scaleX(0.5);
+  transition: opacity 0.25s, transform 0.25s;
+}
+
+.joe_tabs__head-item.active {
+  color: #409eff;
+}
+
+.joe_tabs__head-item.active::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.joe_tabs__body-item {
+  padding: 30rpx;
+  color: #606266;
+}
+
+/* 折叠面板 */
+.joe_collapse {
+  line-height: 1.6;
+  margin: 12rpx 0;
+}
+
+.joe_collapse__item {
+  margin-bottom: 20rpx;
+  color: #606266;
+}
+
+.joe_collapse__item-head {
+  display: flex;
+  align-items: center;
+  background: #f2f6fc;
+  padding: 20rpx 24rpx;
+  padding-right: 16rpx;
+  overflow: hidden;
+  border: 1rpx solid #ebeef5;
+  border-radius: 8rpx;
+}
+
+.joe_collapse__item-head--label {
+  padding-right: 16rpx;
+  flex: 1;
+  font-size: 14px;
+  color: #303133;
+}
+
+.joe_collapse__item-head--icon {
+  flex-shrink: 0;
+  margin-left: auto;
+  color: #909399;
+  transition: transform 0.3s ease;
+  font-size: 12px;
+}
+
+.joe_collapse__item.active .joe_collapse__item-head--icon {
+  transform: rotate(-180deg);
+}
+
+.joe_collapse__item-wrapper {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.joe_collapse__item-wrapper--content {
+  border: 1rpx solid #ebeef5;
+  border-top: 0;
+  padding: 24rpx;
+  border-radius: 0 0 8rpx 8rpx;
+  background: #fff;
+  color: #606266;
+}
+
+.joe_collapse__item:last-child {
+  margin-bottom: 0;
+}
+
+/* 视频占位 */
+.joe_video {
+  margin: 12rpx 0;
+  padding: 40rpx;
+  background: #f9f9f9;
+  border: 1rpx dashed #dcdfe6;
+  border-radius: 8rpx;
+  text-align: center;
+}
+
+.joe_video__placeholder {
+  font-size: 16px;
+  color: #909399;
+  margin-bottom: 12rpx;
+}
+
+.joe_video__tip {
+  font-size: 12px;
+  color: #c0c4cc;
+}
+
+/* 音乐占位 */
+.joe_music {
+  margin: 12rpx 0;
+  padding: 40rpx;
+  background: #f9f9f9;
+  border: 1rpx dashed #dcdfe6;
+  border-radius: 8rpx;
+  text-align: center;
+}
+
+.joe_music__placeholder {
+  font-size: 16px;
+  color: #909399;
+  margin-bottom: 12rpx;
+}
+
+.joe_music__tip {
+  font-size: 12px;
+  color: #c0c4cc;
+}
+
+/* 彩色虚线 */
+.joe_dotted {
+  display: block;
+  width: 100%;
+  height: 2px;
+  margin: 12rpx 0;
+  background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #f9ca24, #ff6b6b);
+  background-size: 200% 100%;
+}
+
+/* 表情 */
+.joe_emoji {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 4rpx;
+}
+

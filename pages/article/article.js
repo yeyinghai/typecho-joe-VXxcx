@@ -1,6 +1,7 @@
 // pages/article/article.js
 const api = require('../../utils/api')
 const { formatTime, copyToClipboard, previewImage } = require('../../utils/util')
+const { parseShortcodes } = require('../../utils/shortcode-parser')
 
 Page({
   data: {
@@ -10,7 +11,10 @@ Page({
     hasImages: false,  // 是否有图片
     articleImages: [],  // 文章中的所有图片
     contentParts: [],  // 分割后的内容部分
-    articleUrl: ''  // 文章链接
+    articleUrl: '',  // 文章链接
+    shortcodeComponents: [],  // 短代码交互组件（标签页、折叠面板等）
+    activeTabIndex: {},  // 标签页激活索引
+    collapseExpanded: {}  // 折叠面板展开状态
   },
 
   onLoad(options) {
@@ -67,34 +71,24 @@ Page({
 
       console.log('========== 文章详细信息 ==========')
       console.log('文章标题:', article.title)
-      console.log('文章所有字段名:', Object.keys(article))
-      console.log('标签字段 (tags):', article.tags)
-      console.log('阅读量字段 (views):', article.views)
-      console.log('阅读量字段 (viewsNum):', article.viewsNum)
-      console.log('分类字段 (category):', article.category)
-      console.log('========== fields 字段 ==========')
-      console.log('fields 对象:', article.fields)
-      if (article.fields) {
-        console.log('fields 包含的字段:', Object.keys(article.fields))
-      }
-      console.log('========== categories 字段 ==========')
-      console.log('categories:', article.categories)
-      console.log('category:', article.category)
-      if (article.categories && article.categories.length > 0) {
-        console.log('categories 总数:', article.categories.length)
-        article.categories.forEach((item, index) => {
-          console.log(`  [${index}] name: ${item.name}, type: ${item.type}, slug: ${item.slug}`)
-        })
-      }
+      console.log('文章ID:', article.cid)
+      console.log('标签数量:', article.tags ? article.tags.length : 0)
 
       // 获取文章内容 - 尝试多种字段名
       let content = article.content || article.text || article.digest || ''
       console.log('原始内容长度:', content.length)
-      console.log('原始内容前100字符:', content.substring(0, 100))
 
-      // 处理文章内容中的图片
+      // 处理文章内容和短代码
+      let shortcodeComponents = []
+      let activeTabIndex = {}
+      let collapseExpanded = {}
+
       if (content) {
-        content = this.processContent(content)
+        const result = this.processContent(content)
+        content = result.content
+        shortcodeComponents = result.components
+        activeTabIndex = result.activeTabIndex
+        collapseExpanded = result.collapseExpanded
         article.content = content
       } else {
         console.warn('警告: 文章内容为空')
@@ -126,64 +120,25 @@ Page({
       const images = this.extractImages(content)
       const hasImages = images.length > 0
 
-      // 将内容按图片分割，以便单独渲染图片支持点击
-      const contentParts = this.splitContentByImages(content)
+      // 将内容按图片和交互组件分割，以便单独渲染
+      const contentParts = this.splitContentByImages(content, shortcodeComponents)
 
-      // 处理标签 - 从 categories 数组中筛选出 type 为 "tag" 的项目
+      // 处理标签 - 保存完整的标签数据（包括 slug）
       let tags = []
-
-      if (article.categories && Array.isArray(article.categories)) {
-        // 从 categories 中筛选出标签（type === "tag"）
-        tags = article.categories
-          .filter(item => item.type === 'tag')
-          .map(item => item.name)
+      if (article.tags && Array.isArray(article.tags)) {
+        // API 返回的标签格式：[{ mid, name, slug, description, count }]
+        tags = article.tags.map(tag => ({
+          name: tag.name || tag.slug,
+          slug: tag.slug || tag.name
+        }))
       }
 
-      // 如果 categories 中没有标签，尝试从 fields.keywords 提取
-      if (tags.length === 0 && article.fields && article.fields.keywords) {
-        const keywords = article.fields.keywords.value || article.fields.keywords
-        if (keywords) {
-          // keywords 可能是逗号分隔的字符串
-          if (typeof keywords === 'string') {
-            tags = keywords.split(',').map(t => t.trim()).filter(t => t)
-          }
-        }
-      }
-
-      console.log('初步提取的标签:', tags)
-
-      // 如果还是没有标签，从全局标签数据中反向匹配
-      if (tags.length === 0) {
-        console.log('尝试从全局标签数据反向匹配...')
-
-        // 清除缓存以便测试新逻辑
-        const cacheKey = `article_tags_${article.cid || article.id}`
-        wx.removeStorageSync(cacheKey)
-        console.log('已清除标签缓存:', cacheKey)
-
-        this.matchTagsFromGlobal(article.cid || article.id).then(matchedTags => {
-          if (matchedTags.length > 0) {
-            console.log('反向匹配到的标签:', matchedTags)
-            this.setData({
-              'article.tags': matchedTags
-            })
-          }
-        })
-      }
-
+      console.log('文章标签:', tags)
       article.tags = tags
 
-      // 处理阅读量 - 从多个可能的位置提取
-      let views = article.views || article.viewsNum || 0
-
-      // 尝试从 fields 中提取阅读量
-      if (!views && article.fields) {
-        views = article.fields.views?.value || article.fields.views ||
-                article.fields.viewsNum?.value || article.fields.viewsNum || 0
-      }
-
-      console.log('处理后的阅读量:', views)
-      article.views = views
+      // 处理阅读量 - 直接使用 API 返回的 views 字段
+      article.views = article.views || 0
+      console.log('文章阅读量:', article.views)
 
       // 生成文章链接
       const app = getApp()
@@ -195,7 +150,10 @@ Page({
         hasImages,
         articleImages: images,
         contentParts,
-        articleUrl
+        articleUrl,
+        shortcodeComponents,
+        activeTabIndex,
+        collapseExpanded
       })
 
       console.log('✅ 文章加载成功')
@@ -224,12 +182,28 @@ Page({
 
   /**
    * 处理文章内容
-   * 注意：图片已经单独提取并渲染，这里不需要处理图片样式
-   * 1. 给各种标签添加内联样式
-   * 2. 处理代码块
+   * 1. 解析短代码
+   * 2. 给各种标签添加内联样式
+   * 3. 处理代码块
+   * @returns {object} { content, components, activeTabIndex, collapseExpanded }
    */
   processContent(content) {
-    // 给段落添加样式
+    // 1. 先解析短代码
+    const { html, components } = parseShortcodes(content)
+    content = html
+
+    // 初始化标签页和折叠面板状态
+    const activeTabIndex = {}
+    const collapseExpanded = {}
+    components.forEach(comp => {
+      if (comp.type === 'tabs') {
+        activeTabIndex[comp.id] = 0
+      } else if (comp.type === 'collapse') {
+        collapseExpanded[comp.id] = comp.data.map(() => false)
+      }
+    })
+
+    // 2. 给段落添加样式
     content = content.replace(/<p>/gi, '<p style="margin-bottom:12px;line-height:1.8;text-align:justify;">')
 
     // 给标题添加样式
@@ -261,21 +235,34 @@ Page({
     content = content.replace(/<th>/gi, '<th style="border:1px solid #e0e0e0;padding:8px;text-align:left;background:#f5f5f5;font-weight:600;">')
     content = content.replace(/<td>/gi, '<td style="border:1px solid #e0e0e0;padding:8px;text-align:left;">')
 
-    return content
+    return {
+      content,
+      components,
+      activeTabIndex,
+      collapseExpanded
+    }
   },
 
   /**
-   * 将内容按图片分割成多个部分
-   * 返回格式：[{html: '文本内容', image: '图片URL'}, ...]
+   * 将内容按图片和交互组件分割成多个部分
+   * 返回格式：[{type: 'html'|'image'|'tabs'|'collapse'|'cloud', ...}, ...]
    */
-  splitContentByImages(content) {
+  splitContentByImages(content, shortcodeComponents) {
     const parts = []
-    const imgRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>/gi
+
+    // 创建组件ID到组件数据的映射
+    const componentMap = {}
+    shortcodeComponents.forEach(comp => {
+      componentMap[comp.id] = comp
+    })
+
+    // 匹配图片和交互组件占位符
+    const combinedRegex = /<img[^>]+src=["']([^"']+)["'][^>]*>|<!--INTERACTIVE_(TABS|COLLAPSE|CLOUD)_([^>]+)-->/gi
     let lastIndex = 0
     let match
 
-    while ((match = imgRegex.exec(content)) !== null) {
-      // 添加图片前的文本内容
+    while ((match = combinedRegex.exec(content)) !== null) {
+      // 添加前面的文本内容
       const textBefore = content.substring(lastIndex, match.index)
       if (textBefore.trim()) {
         parts.push({
@@ -284,13 +271,28 @@ Page({
         })
       }
 
-      // 添加图片
-      parts.push({
-        type: 'image',
-        src: match[1]
-      })
+      if (match[1]) {
+        // 匹配到图片
+        parts.push({
+          type: 'image',
+          src: match[1]
+        })
+      } else if (match[2] && match[3]) {
+        // 匹配到交互组件占位符
+        const compType = match[2].toLowerCase()
+        const compId = match[3]
+        const component = componentMap[compId]
 
-      lastIndex = imgRegex.lastIndex
+        if (component) {
+          parts.push({
+            type: compType,
+            id: compId,
+            data: component.data
+          })
+        }
+      }
+
+      lastIndex = combinedRegex.lastIndex
     }
 
     // 添加最后的文本内容
@@ -303,116 +305,6 @@ Page({
     }
 
     return parts
-  },
-
-  /**
-   * 从全局标签数据中反向匹配文章标签
-   * 通过查询每个标签下的文章列表，判断当前文章是否属于该标签
-   */
-  async matchTagsFromGlobal(articleId) {
-    try {
-      const app = getApp()
-      let allTags = app.globalData.allTags || []
-
-      // 如果全局没有标签数据，先加载
-      if (allTags.length === 0) {
-        console.log('全局标签数据为空，开始加载...')
-        const res = await api.getTags()
-
-        // 解析数据格式
-        if (Array.isArray(res)) {
-          allTags = res
-        } else if (res.data && res.data.dataSet && Array.isArray(res.data.dataSet)) {
-          allTags = res.data.dataSet
-        } else if (res.data && Array.isArray(res.data)) {
-          allTags = res.data
-        } else if (res.list && Array.isArray(res.list)) {
-          allTags = res.list
-        }
-
-        // 保存到全局
-        app.globalData.allTags = allTags
-      }
-
-      console.log('标签总数:', allTags.length)
-
-      // 检查缓存
-      const cacheKey = `article_tags_${articleId}`
-      const cachedTags = wx.getStorageSync(cacheKey)
-      if (cachedTags) {
-        console.log('使用缓存的标签:', cachedTags)
-        return cachedTags
-      }
-
-      // 限制检查的标签数量，避免太多 API 调用
-      const tagsToCheck = allTags.slice(0, 20) // 只检查前 20 个标签
-      const matchedTags = []
-
-      // 逐个检查标签
-      for (const tag of tagsToCheck) {
-        try {
-          const slug = tag.slug
-          console.log(`\n>>> 检查标签: ${tag.name} (slug: ${slug})`)
-
-          // 调用标签文章列表 API，只获取第一页的一部分
-          const res = await api.getTagPosts(slug, 1, 5)
-          console.log(`标签 ${tag.name} API 原始返回:`, JSON.stringify(res).substring(0, 200))
-
-          // 解析文章列表
-          let posts = []
-          if (Array.isArray(res)) {
-            posts = res
-          } else if (res.data && res.data.dataSet && Array.isArray(res.data.dataSet)) {
-            posts = res.data.dataSet
-          } else if (res.data && Array.isArray(res.data)) {
-            posts = res.data
-          }
-
-          console.log(`标签 ${tag.name} 包含 ${posts.length} 篇文章`)
-
-          // 打印该标签下的所有文章 ID 和标题
-          if (posts.length > 0) {
-            console.log(`标签 ${tag.name} 下的文章:`)
-            posts.forEach((post, idx) => {
-              const postId = post.cid || post.id
-              const postTitle = post.title || '无标题'
-              console.log(`  [${idx}] ID: ${postId} (类型: ${typeof postId}), 标题: ${postTitle}`)
-            })
-          }
-
-          console.log(`当前要匹配的文章 ID: ${articleId} (类型: ${typeof articleId})`)
-
-          // 检查当前文章是否在这个标签的文章列表中
-          const found = posts.some(post => {
-            const postId = post.cid || post.id
-            const matched = postId == articleId
-            if (matched) {
-              console.log(`  ✓ 匹配成功: postId ${postId} == articleId ${articleId}`)
-            }
-            return matched
-          })
-
-          if (found) {
-            matchedTags.push(tag.name)
-            console.log(`✅ 文章属于标签: ${tag.name}`)
-          } else {
-            console.log(`❌ 文章不属于标签: ${tag.name}`)
-          }
-
-        } catch (error) {
-          console.error(`检查标签 ${tag.name} 失败:`, error)
-        }
-      }
-
-      // 缓存结果（1小时）
-      wx.setStorageSync(cacheKey, matchedTags)
-
-      return matchedTags
-
-    } catch (error) {
-      console.error('反向匹配标签失败:', error)
-      return []
-    }
   },
 
   /**
@@ -486,6 +378,95 @@ Page({
           wx.showToast({
             title: '链接已复制',
             icon: 'success'
+          })
+        }
+      })
+    }
+  },
+
+  /**
+   * 点击标签
+   */
+  handleTagTap(e) {
+    const { slug, name } = e.currentTarget.dataset
+    if (slug && name) {
+      wx.navigateTo({
+        url: `/pages/tag-posts/tag-posts?slug=${slug}&name=${encodeURIComponent(name)}`
+      })
+    }
+  },
+
+  /**
+   * 标签页切换
+   */
+  handleTabChange(e) {
+    const { id, index } = e.currentTarget.dataset
+    this.setData({
+      [`activeTabIndex.${id}`]: index
+    })
+  },
+
+  /**
+   * 折叠面板切换
+   */
+  handleCollapseToggle(e) {
+    const { id, index } = e.currentTarget.dataset
+    const key = `collapseExpanded.${id}[${index}]`
+    const currentState = this.data.collapseExpanded[id][index]
+    this.setData({
+      [key]: !currentState
+    })
+  },
+
+  /**
+   * 云盘下载点击
+   */
+  handleCloudClick(e) {
+    const { url, password } = e.currentTarget.dataset
+
+    if (!url) {
+      wx.showToast({
+        title: '下载链接为空',
+        icon: 'none'
+      })
+      return
+    }
+
+    // 如果有提取码，先复制提取码
+    if (password) {
+      wx.setClipboardData({
+        data: password,
+        success: () => {
+          wx.showModal({
+            title: '提取码已复制',
+            content: `提取码: ${password}\n\n点击"确定"打开下载链接`,
+            success: (res) => {
+              if (res.confirm) {
+                // 复制链接
+                wx.setClipboardData({
+                  data: url,
+                  success: () => {
+                    wx.showToast({
+                      title: '链接已复制，请在浏览器打开',
+                      icon: 'none',
+                      duration: 3000
+                    })
+                  }
+                })
+              }
+            }
+          })
+        }
+      })
+    } else {
+      // 没有提取码，直接复制链接
+      wx.setClipboardData({
+        data: url,
+        success: () => {
+          wx.showToast({
+            title: '链接已复制，请在浏览器打开',
+            icon: 'none',
+            duration: 2000
           })
         }
       })

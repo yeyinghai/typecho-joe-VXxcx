@@ -14,6 +14,7 @@
       <view class="article-meta">
         <view class="meta-row">
           <text class="meta-item">📅 {{article.created}}</text>
+          <text class="meta-item" wx:if="{{article.views !== undefined}}">👁️ {{article.views}}</text>
         </view>
         <view class="meta-row" wx:if="{{article.category}}">
           <text class="meta-item">📂 {{article.category}}</text>
@@ -37,6 +38,83 @@
           data-src="{{item.src}}"
           show-menu-by-longpress="{{true}}"
         ></image>
+
+        <!-- 标签页组件 -->
+        <view wx:if="{{item.type === 'tabs'}}" class="joe_tabs">
+          <view class="joe_tabs__head">
+            <view
+              wx:for="{{item.data}}"
+              wx:for-item="tab"
+              wx:for-index="tabIndex"
+              wx:key="tabIndex"
+              class="joe_tabs__head-item {{activeTabIndex[item.id] === tabIndex ? 'active' : ''}}"
+              bindtap="handleTabChange"
+              data-id="{{item.id}}"
+              data-index="{{tabIndex}}"
+            >
+              {{tab.title}}
+            </view>
+          </view>
+          <view class="joe_tabs__body">
+            <view
+              wx:for="{{item.data}}"
+              wx:for-item="tab"
+              wx:for-index="tabIndex"
+              wx:key="tabIndex"
+              class="joe_tabs__body-item"
+              wx:if="{{activeTabIndex[item.id] === tabIndex}}"
+            >
+              <rich-text nodes="{{tab.content}}"></rich-text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 折叠面板组件 -->
+        <view wx:if="{{item.type === 'collapse'}}" class="joe_collapse">
+          <view
+            wx:for="{{item.data}}"
+            wx:for-item="panel"
+            wx:for-index="panelIndex"
+            wx:key="panelIndex"
+            class="joe_collapse__item {{collapseExpanded[item.id][panelIndex] ? 'active' : ''}}"
+          >
+            <view
+              class="joe_collapse__item-head"
+              bindtap="handleCollapseToggle"
+              data-id="{{item.id}}"
+              data-index="{{panelIndex}}"
+            >
+              <view class="joe_collapse__item-head--label">{{panel.title}}</view>
+              <view class="joe_collapse__item-head--icon">▼</view>
+            </view>
+            <view
+              class="joe_collapse__item-wrapper"
+              style="max-height: {{collapseExpanded[item.id][panelIndex] ? '1000px' : '0'}};"
+            >
+              <view class="joe_collapse__item-wrapper--content">
+                <rich-text nodes="{{panel.content}}"></rich-text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 云盘下载组件 -->
+        <view
+          wx:if="{{item.type === 'cloud'}}"
+          class="joe_cloud"
+          bindtap="handleCloudClick"
+          data-url="{{item.data.url}}"
+          data-password="{{item.data.password}}"
+        >
+          <view class="joe_cloud__logo {{item.data.cloudType}}">{{item.data.icon}}</view>
+          <view class="joe_cloud__describe">
+            <view class="joe_cloud__describe-title">{{item.data.name}}</view>
+            <view class="joe_cloud__describe-type">
+              {{item.data.password ? '提取码: ' + item.data.password : '点击下载'}}
+            </view>
+          </view>
+          <view class="joe_cloud__btn">↓</view>
+        </view>
       </block>
     </view>
 
@@ -44,7 +122,7 @@
     <view class="article-tags-footer" wx:if="{{article.tags && article.tags.length}}">
       <view class="tags-label">🏷️ 标签</view>
       <view class="tags-list">
-        <text class="tag-item" wx:for="{{article.tags}}" wx:key="index">{{item}}</text>
+        <view class="tag-item" wx:for="{{article.tags}}" wx:key="slug" bindtap="handleTagTap" data-slug="{{item.slug}}" data-name="{{item.name}}">{{item.name}}</view>
       </view>
     </view>
 
