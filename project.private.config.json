@@ -1,7 +1,19 @@
 {
   "libVersion": "3.11.2",
   "projectname": "typecho-miniprogram",
-  "condition": {},
+  "condition": {
+    "miniprogram": {
+      "list": [
+        {
+          "name": "pages/animation-test/animation-test",
+          "pathName": "pages/animation-test/animation-test",
+          "query": "",
+          "scene": null,
+          "launchMode": "default"
+        }
+      ]
+    }
+  },
   "setting": {
     "urlCheck": false,
     "coverView": true,

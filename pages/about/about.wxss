@@ -13,6 +13,65 @@
   color: #fff;
 }
 
+/* 关于项目按钮 */
+.project-btn-section {
+  padding: 0 32rpx;
+  margin-top: -20rpx;
+  margin-bottom: 24rpx;
+}
+
+.project-btn {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 12rpx;
+  padding: 24rpx 32rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.project-btn:active {
+  transform: scale(0.98);
+  transition: transform 0.2s;
+}
+
+.project-btn-icon {
+  font-size: 20px;
+  margin-right: 16rpx;
+}
+
+.project-btn-text {
+  font-size: 15px;
+  color: #333;
+  font-weight: 500;
+  margin-right: 12rpx;
+}
+
+.project-btn-hand {
+  font-size: 16px;
+  animation: point 1s ease-in-out infinite;
+  margin-right: auto;
+}
+
+.project-btn-version {
+  font-size: 12px;
+  color: #fff;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  padding: 4rpx 12rpx;
+  border-radius: 8rpx;
+  margin-left: auto;
+  font-weight: 600;
+  box-shadow: 0 2rpx 8rpx rgba(102, 126, 234, 0.3);
+}
+
+@keyframes point {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(8rpx);
+  }
+}
+
 .profile-avatar {
   width: 160rpx;
   height: 160rpx;
@@ -46,8 +105,8 @@
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 32rpx;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24rpx;
 }
 
 .stat-item {
@@ -55,14 +114,31 @@
 }
 
 .stat-value {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   color: #667eea;
   margin-bottom: 8rpx;
 }
 
+/* 访客数量颜色 - 根据数量区间显示不同颜色 */
+.views-low {
+  color: #999;  /* 灰色 - 0-99 */
+}
+
+.views-normal {
+  color: #52c41a;  /* 绿色 - 100-999 */
+}
+
+.views-medium {
+  color: #fa8c16;  /* 橙色 - 1000-9999 */
+}
+
+.views-high {
+  color: #f5222d;  /* 红色 - 10000+ */
+}
+
 .stat-label {
-  font-size: 13px;
+  font-size: 12px;
   color: #999;
 }
 

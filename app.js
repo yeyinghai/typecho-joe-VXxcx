@@ -18,6 +18,8 @@ App({
     apiToken: '45683968',
     // 网站地址
     siteUrl: 'https://www.yeyhome.com',
+    // 随机图片地址（用于文章无缩略图时的占位图）
+    randomImageUrl: 'https://nas.yeyhome.com:295',
     // 网站信息（可在关于页配置）
     siteInfo: {
       name: '夜影小窝',

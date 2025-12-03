@@ -71,11 +71,20 @@ function getCategories() {
 
 /**
  * 获取某分类下的文章
- * @param {string|number} id - 分类ID
+ * @param {string|number} id - 分类ID 或 slug
  * @param {number} page - 页码
+ * @param {number} pageSize - 每页数量
  */
-function getCategoryPosts(id, page = 1) {
-  return get(`/posts?category=${id}&page=${page}`)
+function getCategoryPosts(id, page = 1, pageSize = 10) {
+  // 使用与标签文章相同的 filterType 模式
+  const queryParams = {
+    filterType: 'category',
+    filterSlug: id,
+    page,
+    pageSize
+  }
+  const query = buildQuery(queryParams)
+  return get(`/posts${query ? '?' + query : ''}`)
 }
 
 /**
@@ -111,6 +120,13 @@ function getPage(slug) {
 }
 
 /**
+ * 获取友链列表
+ */
+function getLinks() {
+  return get('/links')
+}
+
+/**
  * 获取网站统计信息
  */
 function getSiteStats() {
@@ -134,6 +150,7 @@ module.exports = {
   getTags,
   getTagPosts,
   getPage,
+  getLinks,
   getSiteStats,
   getArchives
 }

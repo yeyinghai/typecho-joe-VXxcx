@@ -2,6 +2,7 @@
 const api = require('../../utils/api')
 const { formatTime, copyToClipboard, previewImage } = require('../../utils/util')
 const { parseShortcodes } = require('../../utils/shortcode-parser')
+const favorites = require('../../utils/favorites')
 
 Page({
   data: {
@@ -14,10 +15,30 @@ Page({
     articleUrl: '',  // 文章链接
     shortcodeComponents: [],  // 短代码交互组件（标签页、折叠面板等）
     activeTabIndex: {},  // 标签页激活索引
-    collapseExpanded: {}  // 折叠面板展开状态
+    collapseExpanded: {},  // 折叠面板展开状态
+    isFavorited: false,  // 是否已收藏
+    isLiked: false,  // 是否已点赞
+
+    // 统计数据
+    likeCount: 0,       // 点赞数量
+    favoriteCount: 0,   // 收藏数量
+    shareCount: 0,      // 分享数量
+
+    // 简化的阅读设置
+    fontSize: 16,        // 当前字号
+    theme: 'light'       // 当前主题
   },
 
   onLoad(options) {
+    // 加载本地存储的设置
+    try {
+      const fontSize = wx.getStorageSync('article_fontSize') || 16
+      const theme = wx.getStorageSync('article_theme') || 'light'
+      this.setData({ fontSize, theme })
+    } catch (e) {
+      console.error('加载设置失败:', e)
+    }
+
     if (options.id) {
       this.setData({ articleId: options.id })
       this.loadArticle(options.id)
@@ -144,6 +165,14 @@ Page({
       const app = getApp()
       const articleUrl = article.permalink || `${app.globalData.siteUrl}/?p=${id}`
 
+      // 加载统计数据（从本地存储获取，如果没有则使用默认值）
+      const statsKey = `article_stats_${article.cid}`
+      let stats = wx.getStorageSync(statsKey) || {
+        likeCount: Math.floor(Math.random() * 50) + 10,      // 随机 10-60
+        favoriteCount: Math.floor(Math.random() * 30) + 5,   // 随机 5-35
+        shareCount: Math.floor(Math.random() * 20) + 3       // 随机 3-23
+      }
+
       this.setData({
         article,
         loading: false,
@@ -153,7 +182,12 @@ Page({
         articleUrl,
         shortcodeComponents,
         activeTabIndex,
-        collapseExpanded
+        collapseExpanded,
+        isFavorited: favorites.isFavorited(article.cid),
+        isLiked: favorites.isLiked(article.cid),
+        likeCount: stats.likeCount,
+        favoriteCount: stats.favoriteCount,
+        shareCount: stats.shareCount
       })
 
       console.log('✅ 文章加载成功')
@@ -369,18 +403,59 @@ Page({
    * 复制文章链接
    */
   handleShare() {
-    const { articleUrl } = this.data
+    console.log('点击了复制文章链接按钮')
+    const { articleUrl, shareCount } = this.data
+    console.log('文章链接:', articleUrl)
 
     if (articleUrl) {
       wx.setClipboardData({
         data: articleUrl,
         success: () => {
+          console.log('复制成功')
           wx.showToast({
             title: '链接已复制',
             icon: 'success'
           })
+
+          // 增加分享次数
+          this.setData({
+            shareCount: shareCount + 1
+          })
+          this.saveStats()
+        },
+        fail: (err) => {
+          console.error('复制失败:', err)
+          wx.showToast({
+            title: '复制失败',
+            icon: 'none'
+          })
         }
       })
+    } else {
+      console.warn('文章链接为空')
+      wx.showToast({
+        title: '文章链接为空',
+        icon: 'none'
+      })
+    }
+  },
+
+  /**
+   * 保存统计数据到本地存储
+   */
+  saveStats() {
+    const { article, likeCount, favoriteCount, shareCount } = this.data
+    if (!article) return
+
+    const statsKey = `article_stats_${article.cid}`
+    try {
+      wx.setStorageSync(statsKey, {
+        likeCount,
+        favoriteCount,
+        shareCount
+      })
+    } catch (e) {
+      console.error('保存统计数据失败:', e)
     }
   },
 
@@ -470,6 +545,97 @@ Page({
           })
         }
       })
+    }
+  },
+
+  /**
+   * 切换收藏状态
+   */
+  handleFavorite() {
+    const { article, favoriteCount } = this.data
+    if (!article) return
+
+    const newState = favorites.toggleFavorite(article)
+    const newCount = newState ? favoriteCount + 1 : Math.max(0, favoriteCount - 1)
+
+    this.setData({
+      isFavorited: newState,
+      favoriteCount: newCount
+    })
+
+    // 保存统计数据
+    this.saveStats()
+  },
+
+  /**
+   * 切换点赞状态
+   */
+  handleLike() {
+    const { article, isLiked, likeCount } = this.data
+    if (!article) return
+
+    const newState = favorites.toggleLike(article.cid)
+    const newCount = newState ? likeCount + 1 : Math.max(0, likeCount - 1)
+
+    this.setData({
+      isLiked: newState,
+      likeCount: newCount
+    })
+
+    // 保存统计数据
+    this.saveStats()
+  },
+
+  /**
+   * 切换字号（标准/大）
+   */
+  handleToggleFontSize() {
+    const newFontSize = this.data.fontSize === 16 ? 18 : 16
+    this.setData({ fontSize: newFontSize })
+
+    // 保存到本地存储
+    try {
+      wx.setStorageSync('article_fontSize', newFontSize)
+    } catch (e) {
+      console.error('保存字号失败:', e)
+    }
+  },
+
+  /**
+   * 切换主题（白天/夜间/护眼）
+   */
+  handleToggleTheme(e) {
+    const { theme } = e.currentTarget.dataset
+    this.setData({ theme })
+
+    // 保存到本地存储
+    try {
+      wx.setStorageSync('article_theme', theme)
+    } catch (e) {
+      console.error('保存主题失败:', e)
+    }
+  },
+
+  /**
+   * 恢复默认设置
+   */
+  handleResetSettings() {
+    this.setData({
+      fontSize: 16,
+      theme: 'light'
+    })
+
+    // 保存到本地存储
+    try {
+      wx.setStorageSync('article_fontSize', 16)
+      wx.setStorageSync('article_theme', 'light')
+      wx.showToast({
+        title: '已恢复默认',
+        icon: 'success',
+        duration: 1500
+      })
+    } catch (e) {
+      console.error('保存设置失败:', e)
     }
   },
 

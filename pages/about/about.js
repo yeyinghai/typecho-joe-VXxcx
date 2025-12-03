@@ -5,6 +5,9 @@ const { copyToClipboard } = require('../../utils/util')
 
 Page({
   data: {
+    // 小程序版本号
+    version: '2.5.0',
+
     // 个人信息（初始值会被 globalData 覆盖）
     profile: {
       avatar: '/assets/avatar.png',
@@ -88,50 +91,45 @@ Page({
 
       console.log('========== 开始加载统计数据 ==========')
 
-      // 方式1：使用统计 API（如果你的 Typecho 有这个端点）
-      // const res = await api.getSiteStats()
-      // this.setData({ stats: res.data || res })
-
-      // 方式2：分别获取各项统计
-      const [posts, categories, tags] = await Promise.all([
-        api.getPosts({ pageSize: 1 }),
+      // 获取所有文章（用于计算阅读量总和）、分类、标签
+      const [allPosts, categories, tags] = await Promise.all([
+        api.getPosts({ pageSize: 100 }),  // 获取较多文章用于计算阅读量
         api.getCategories(),
         api.getTags()
       ])
 
-      console.log('文章API响应:', posts)
-      console.log('分类API响应:', categories)
-      console.log('标签API响应:', tags)
+      console.log('文章API响应:', allPosts)
 
       // 解析文章总数
-      // API 返回格式: { status: "success", data: { total: 31, dataSet: [...] } }
       let postsCount = 0
+      let postsList = []
 
-      // 情况1: data.total（标准格式）
-      if (posts.data && posts.data.total !== undefined) {
-        postsCount = posts.data.total
+      if (allPosts.data && allPosts.data.count !== undefined) {
+        postsCount = allPosts.data.count
       }
-      // 情况2: data.count
-      else if (posts.data && posts.data.count !== undefined) {
-        postsCount = posts.data.count
+      if (allPosts.data && allPosts.data.dataSet && Array.isArray(allPosts.data.dataSet)) {
+        postsList = allPosts.data.dataSet
+      } else if (allPosts.data && Array.isArray(allPosts.data)) {
+        postsList = allPosts.data
+        postsCount = postsCount || postsList.length
       }
-      // 情况3: data.totalCount
-      else if (posts.data && posts.data.totalCount !== undefined) {
-        postsCount = posts.data.totalCount
-      }
-      // 情况4: 直接在顶层
-      else if (posts.total !== undefined) {
-        postsCount = posts.total
-      } else if (posts.count !== undefined) {
-        postsCount = posts.count
-      }
-      // 情况5: 从数组长度推断
-      else if (posts.data && posts.data.dataSet && Array.isArray(posts.data.dataSet)) {
-        postsCount = posts.data.dataSet.length
-      } else if (posts.data && Array.isArray(posts.data)) {
-        postsCount = posts.data.length
-      } else if (Array.isArray(posts)) {
-        postsCount = posts.length
+
+      // 计算所有文章阅读量之和
+      let totalViews = 0
+      postsList.forEach(post => {
+        totalViews += parseInt(post.views) || 0
+      })
+
+      console.log('文章阅读量总和:', totalViews)
+
+      // 根据访客数量设置颜色类名
+      let viewsColorClass = 'views-low'
+      if (totalViews >= 10000) {
+        viewsColorClass = 'views-high'
+      } else if (totalViews >= 1000) {
+        viewsColorClass = 'views-medium'
+      } else if (totalViews >= 100) {
+        viewsColorClass = 'views-normal'
       }
 
       // 解析分类数量
@@ -142,14 +140,15 @@ Page({
       let tagsData = tags.data || tags
       let tagsCount = Array.isArray(tagsData) ? tagsData.length : 0
 
-      console.log('解析结果 - 文章数:', postsCount, '分类数:', categoriesCount, '标签数:', tagsCount)
+      console.log('解析结果 - 文章数:', postsCount, '分类数:', categoriesCount, '标签数:', tagsCount, '访客数:', totalViews)
 
       this.setData({
         stats: {
           postsCount: postsCount,
           categoriesCount: categoriesCount,
           tagsCount: tagsCount,
-          viewsCount: posts.totalViews || posts.views || 0
+          totalViews: totalViews,
+          viewsColorClass: viewsColorClass
         },
         loading: false
       })
@@ -181,12 +180,33 @@ Page({
   },
 
   /**
+   * 前往关于项目页面
+   */
+  handleProject() {
+    wx.navigateTo({
+      url: '/pages/project/project'
+    })
+  },
+
+  /**
+   * 前往收藏页面
+   */
+  handleFavorites() {
+    wx.navigateTo({
+      url: '/pages/favorites/favorites'
+    })
+  },
+
+  /**
    * 复制联系方式
    */
   handleCopyContact(e) {
+    console.log('点击了联系方式')
     const { type, value } = e.currentTarget.dataset
+    console.log('联系方式类型:', type, '值:', value)
 
     if (!value) {
+      console.warn('联系方式值为空')
       wx.showToast({
         title: '暂无此联系方式',
         icon: 'none'
@@ -195,19 +215,31 @@ Page({
     }
 
     const typeNames = {
-      qq: 'QQ',
-      wechat: '微信',
-      github: 'GitHub',
-      gitee: 'Gitee',
-      blog: '博客',
-      email: '邮箱'
+      qq: 'QQ号',
+      wechat: '微信号',
+      github: 'GitHub地址',
+      gitee: 'Gitee地址',
+      blog: '博客地址',
+      email: '邮箱地址'
     }
 
-    copyToClipboard(value).then(() => {
-      wx.showToast({
-        title: `${typeNames[type]}已复制`,
-        icon: 'success'
-      })
+    wx.setClipboardData({
+      data: value,
+      success: () => {
+        console.log('复制成功:', value)
+        wx.showToast({
+          title: `${typeNames[type]}已复制`,
+          icon: 'success',
+          duration: 2000
+        })
+      },
+      fail: (err) => {
+        console.error('复制失败:', err)
+        wx.showToast({
+          title: '复制失败，请重试',
+          icon: 'none'
+        })
+      }
     })
   },
 

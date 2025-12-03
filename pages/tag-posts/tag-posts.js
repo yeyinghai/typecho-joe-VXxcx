@@ -85,6 +85,7 @@ Page({
       console.log('获取到文章数量:', newPosts.length)
 
       // 处理文章数据
+      const app = getApp()
       newPosts = newPosts.map(post => {
         // 提取缩略图
         let thumbnail = post.thumbnail || post.thumb || post.image || post.cover
@@ -104,6 +105,12 @@ Page({
           if (imgMatch && imgMatch[1]) {
             thumbnail = imgMatch[1]
           }
+        }
+
+        // 如果仍然没有缩略图，使用随机图片
+        if (!thumbnail) {
+          const postId = post.cid || post.id || Math.random()
+          thumbnail = `${app.globalData.randomImageUrl}?id=${postId}`
         }
 
         // 提取摘要

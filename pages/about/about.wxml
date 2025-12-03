@@ -7,6 +7,16 @@
     <view class="profile-description">{{profile.description}}</view>
   </view>
 
+  <!-- 关于项目按钮 -->
+  <view class="project-btn-section">
+    <view class="project-btn" bindtap="handleProject">
+      <text class="project-btn-icon">📦</text>
+      <text class="project-btn-text">关于项目</text>
+      <text class="project-btn-hand">👆</text>
+      <text class="project-btn-version">v{{version}}</text>
+    </view>
+  </view>
+
   <!-- 网站统计 -->
   <view class="stats-section">
     <view class="stats-grid">
@@ -22,6 +32,10 @@
         <view class="stat-value">{{stats.tagsCount}}</view>
         <view class="stat-label">标签</view>
       </view>
+      <view class="stat-item">
+        <view class="stat-value {{stats.viewsColorClass}}">{{stats.totalViews}}</view>
+        <view class="stat-label">访客</view>
+      </view>
     </view>
   </view>
 
@@ -35,6 +49,10 @@
       <view class="action-card" bindtap="handleTags">
         <view class="action-icon">🏷️</view>
         <view class="action-text">标签云</view>
+      </view>
+      <view class="action-card" bindtap="handleFavorites">
+        <view class="action-icon">⭐</view>
+        <view class="action-text">我的收藏</view>
       </view>
     </view>
   </view>
