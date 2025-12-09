@@ -1,0 +1,64 @@
+<!--pages/favorites/favorites.wxml-->
+<view class="favorites-container">
+  <!-- 头部 -->
+  <view class="favorites-header">
+    <view class="header-left">
+      <view class="header-title">我的收藏</view>
+      <view class="header-count">共 {{favoritesList.length}} 篇文章</view>
+    </view>
+    <view class="header-actions" wx:if="{{favoritesList.length > 0}}">
+      <view class="clear-btn" bindtap="handleClearAll">
+        <text class="clear-icon">🗑️</text>
+        <text>清空</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view wx:if="{{loading}}" class="loading">加载中...</view>
+
+  <!-- 空状态 -->
+  <view wx:elif="{{isEmpty}}" class="empty-state">
+    <view class="empty-icon">📚</view>
+    <view class="empty-text">还没有收藏的文章</view>
+    <view class="empty-desc">在文章详情页点击收藏按钮即可收藏</view>
+  </view>
+
+  <!-- 收藏列表 -->
+  <view wx:else class="favorites-list">
+    <view
+      class="favorite-item"
+      wx:for="{{favoritesList}}"
+      wx:key="cid"
+      bindtap="handleArticleTap"
+      data-cid="{{item.cid}}"
+    >
+      <!-- 文章缩略图 -->
+      <view class="item-thumb" wx:if="{{item.thumbnail}}">
+        <image class="thumb-image" src="{{item.thumbnail}}" mode="aspectFill"></image>
+      </view>
+
+      <!-- 文章信息 -->
+      <view class="item-content">
+        <view class="item-title">{{item.title}}</view>
+        <view class="item-meta">
+          <text class="meta-item">📅 {{item.created}}</text>
+          <text class="meta-item" wx:if="{{item.views}}">👁️ {{item.views}}</text>
+        </view>
+        <view class="item-footer">
+          <view class="favorite-time">收藏于 {{item.formattedFavoriteTime}}</view>
+        </view>
+      </view>
+
+      <!-- 取消收藏按钮 -->
+      <view
+        class="item-action"
+        catchtap="handleUnfavorite"
+        data-cid="{{item.cid}}"
+        data-title="{{item.title}}"
+      >
+        <text class="action-icon">⭐</text>
+      </view>
+    </view>
+  </view>
+</view>

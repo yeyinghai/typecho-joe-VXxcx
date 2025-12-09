@@ -1,5 +1,5 @@
 <!--pages/article/article.wxml-->
-<view class="article-container">
+<view class="article-container" data-theme="{{readingSettings.theme}}">
   <!-- 加载状态 -->
   <view wx:if="{{loading}}" class="loading">加载中...</view>
 
@@ -20,10 +20,49 @@
           <text class="meta-item">📂 {{article.category}}</text>
         </view>
       </view>
+
+      <!-- 快捷设置按钮 -->
+      <view class="quick-settings">
+        <view
+          class="setting-btn {{fontSize === 16 ? 'active' : ''}}"
+          bindtap="handleToggleFontSize"
+        >
+          标准
+        </view>
+        <view
+          class="setting-btn {{fontSize === 18 ? 'active' : ''}}"
+          bindtap="handleToggleFontSize"
+        >
+          大
+        </view>
+        <view
+          class="setting-btn {{theme === 'dark' ? 'active' : ''}}"
+          bindtap="handleToggleTheme"
+          data-theme="dark"
+        >
+          夜间
+        </view>
+        <view
+          class="setting-btn {{theme === 'sepia' ? 'active' : ''}}"
+          bindtap="handleToggleTheme"
+          data-theme="sepia"
+        >
+          护眼
+        </view>
+        <view
+          class="setting-btn {{fontSize === 16 && theme === 'light' ? 'active' : ''}}"
+          bindtap="handleResetSettings"
+        >
+          默认
+        </view>
+      </view>
     </view>
 
     <!-- 文章正文 -->
-    <view class="article-body">
+    <view
+      class="article-body theme-{{theme}}"
+      style="font-size: {{fontSize}}px;"
+    >
       <block wx:for="{{contentParts}}" wx:key="index">
         <!-- 文本内容 -->
         <rich-text wx:if="{{item.type === 'html'}}" nodes="{{item.content}}"></rich-text>
@@ -126,6 +165,25 @@
       </view>
     </view>
 
+    <!-- 文章底部操作栏 -->
+    <view class="article-actions">
+      <view class="action-item" bindtap="handleLike">
+        <text class="action-icon">{{isLiked ? '❤️' : '🤍'}}</text>
+        <text class="action-count">{{likeCount || 0}}</text>
+        <text class="action-text">{{isLiked ? '已点赞' : '点赞'}}</text>
+      </view>
+      <view class="action-item" bindtap="handleFavorite">
+        <text class="action-icon">{{isFavorited ? '⭐' : '☆'}}</text>
+        <text class="action-count">{{favoriteCount || 0}}</text>
+        <text class="action-text">{{isFavorited ? '已收藏' : '收藏'}}</text>
+      </view>
+      <view class="action-item" bindtap="handleShare">
+        <text class="action-icon">🔗</text>
+        <text class="action-count">{{shareCount || 0}}</text>
+        <text class="action-text">分享</text>
+      </view>
+    </view>
+
     <!-- 文章底部 -->
     <view class="article-footer">
       <view class="copyright">
@@ -133,11 +191,7 @@
         <view class="copyright-text">本文作者：夜影小窝</view>
         <view class="copyright-text">本文链接：{{articleUrl}}</view>
         <view class="copyright-text">版权声明：本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！</view>
-      </view>
-
-      <view class="share-btn" bindtap="handleShare">
-        <text class="share-icon">🔗</text>
-        <text>复制文章链接</text>
+        <view class="copyright-text">侵权声明：若侵害到您的权利，请您及时联系我，在收到通知后第一时间处理，邮箱ddh6126459@126.com</view>
       </view>
     </view>
   </view>

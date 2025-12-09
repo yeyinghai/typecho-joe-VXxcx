@@ -6,10 +6,12 @@
     "pages/links/links",
     "pages/about/about",
     "pages/search/search",
+    "pages/favorites/favorites",
     "pages/article/article",
     "pages/archive/archive",
     "pages/tags/tags",
-    "pages/tag-posts/tag-posts"
+    "pages/tag-posts/tag-posts",
+    "pages/project/project"
   ],
   "window": {
     "backgroundTextStyle": "light",

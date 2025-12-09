@@ -1,0 +1,36 @@
+<!--pages/project/project.wxml-->
+<view class="project-container">
+  <!-- 项目头部 -->
+  <view class="project-header">
+    <image class="project-logo" src="{{project.logo}}" mode="aspectFit"></image>
+    <view class="project-name">{{project.name}}</view>
+  </view>
+
+  <!-- 项目信息列表 -->
+  <view class="info-section">
+    <view class="section-title">项目信息</view>
+
+    <view class="info-list">
+      <view
+        class="info-item {{item.canCopy ? 'copyable' : ''}}"
+        wx:for="{{info}}"
+        wx:key="label"
+        bindtap="handleCopy"
+        data-label="{{item.label}}"
+        data-value="{{item.value}}"
+        data-cancopy="{{item.canCopy}}"
+      >
+        <view class="info-icon">{{item.icon}}</view>
+        <view class="info-content">
+          <view class="info-label">{{item.label}}</view>
+          <view class="info-value">{{item.value}}</view>
+        </view>
+        <view class="info-copy" wx:if="{{item.canCopy}}">
+          <text class="copy-icon">📋</text>
+        </view>
+      </view>
+    </view>
+
+    <view class="info-tip">点击带有复制图标的项目即可复制</view>
+  </view>
+</view>

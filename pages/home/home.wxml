@@ -34,9 +34,14 @@
 
     <scroll-view wx:elif="{{categories.length}}" class="categories-scroll" scroll-x>
       <view class="categories-list">
-        <view class="category-item {{item.styleClass}}" wx:for="{{categories}}" wx:key="mid" bindtap="handleCategoryTap" data-id="{{item.mid || item.id}}">
-          <view class="category-name">{{item.name}}</view>
-          <view class="category-count">{{item.count || 0}} 篇</view>
+        <view class="category-card" wx:for="{{categories}}" wx:key="mid" bindtap="handleCategoryTap" data-id="{{item.slug || item.mid || item.id}}">
+          <!-- 背景图片区域 -->
+          <view class="category-bg" style="background-image: url('{{item.bgImage}}');">
+            <!-- 中间显示分类名称 -->
+            <view class="category-name-overlay">{{item.name}}</view>
+            <!-- 左下角显示文章数量 -->
+            <view class="category-count-badge">{{item.count || 0}} 篇</view>
+          </view>
         </view>
       </view>
     </scroll-view>
@@ -44,7 +49,7 @@
     <view wx:else class="empty">暂无分类</view>
   </view>
 
-  <!-- 文章列表（瀑布流） -->
+  <!-- 文章列表 -->
   <view class="section posts-section">
     <view class="section-header">
       <text class="section-title">📝 最新文章</text>
@@ -55,31 +60,18 @@
       <text>暂无文章数据</text>
     </view>
 
-    <view wx:if="{{posts.length > 0}}" class="waterfall-container">
-      <!-- 左列 -->
-      <view class="waterfall-column">
-        <view class="post-card" wx:for="{{leftPosts}}" wx:key="id" bindtap="handlePostTap" data-id="{{item.id}}">
-          <image wx:if="{{item.thumbnail}}" class="post-thumbnail" src="{{item.thumbnail}}" mode="aspectFill"></image>
-          <view class="post-content">
-            <view class="post-title">{{item.title}}</view>
-            <view class="post-excerpt">{{item.excerpt}}</view>
-            <view class="post-meta">
-              <text class="meta-item">{{item.created}}</text>
-            </view>
-          </view>
-        </view>
-      </view>
+    <view wx:if="{{posts.length > 0}}" class="posts-list">
+      <view class="post-item" wx:for="{{posts}}" wx:key="id" bindtap="handlePostTap" data-id="{{item.id}}">
+        <!-- 左侧缩略图 -->
+        <image class="post-thumb" src="{{item.thumbnail}}" mode="aspectFill"></image>
 
-      <!-- 右列 -->
-      <view class="waterfall-column">
-        <view class="post-card" wx:for="{{rightPosts}}" wx:key="id" bindtap="handlePostTap" data-id="{{item.id}}">
-          <image wx:if="{{item.thumbnail}}" class="post-thumbnail" src="{{item.thumbnail}}" mode="aspectFill"></image>
-          <view class="post-content">
-            <view class="post-title">{{item.title}}</view>
-            <view class="post-excerpt">{{item.excerpt}}</view>
-            <view class="post-meta">
-              <text class="meta-item">{{item.created}}</text>
-            </view>
+        <!-- 右侧内容 -->
+        <view class="post-info">
+          <view class="post-title">{{item.title}}</view>
+          <view class="post-excerpt">{{item.excerpt}}</view>
+          <view class="post-meta">
+            <text class="meta-item">{{item.created}}</text>
+            <text class="meta-item" wx:if="{{item.views !== undefined}}">👁️ {{item.views}}</text>
           </view>
         </view>
       </view>

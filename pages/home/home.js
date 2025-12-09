@@ -16,11 +16,7 @@ Page({
     posts: [],
     postsLoading: false,  // 改为 false，否则会阻止加载
     page: 1,
-    hasMore: true,
-
-    // 瀑布流相关
-    leftPosts: [],
-    rightPosts: []
+    hasMore: true
   },
 
   onLoad() {
@@ -36,8 +32,6 @@ Page({
     this.setData({
       page: 1,
       posts: [],
-      leftPosts: [],
-      rightPosts: [],
       hasMore: true
     })
 
@@ -66,6 +60,8 @@ Page({
     try {
       this.setData({ featuredLoading: true })
       console.log('开始加载随机推荐文章')
+
+      const app = getApp()
 
       // 获取较多的文章用于随机选择
       const res = await api.getPosts({ page: 1, pageSize: 50 })
@@ -118,6 +114,12 @@ Page({
           if (imgMatch && imgMatch[1]) {
             thumbnail = imgMatch[1]
           }
+        }
+
+        // 如果仍然没有缩略图，使用随机图片
+        if (!thumbnail) {
+          const postId = post.cid || post.id || Math.random()
+          thumbnail = `${app.globalData.randomImageUrl}?id=${postId}`
         }
 
         // 提取摘要
@@ -184,26 +186,15 @@ Page({
         categories = res.list
       }
 
-      // 根据文章数量为分类分配样式类
-      categories = categories.map(cat => {
-        const count = cat.count || 0
-        let styleClass = ''
-
-        if (count <= 5) {
-          styleClass = 'style-1'
-        } else if (count <= 15) {
-          styleClass = 'style-2'
-        } else if (count <= 30) {
-          styleClass = 'style-3'
-        } else if (count <= 50) {
-          styleClass = 'style-4'
-        } else {
-          styleClass = 'style-5'
-        }
+      // 为每个分类分配随机背景图片
+      categories = categories.map((cat, index) => {
+        // 使用随机图片地址，添加时间戳和索引确保每个分类图片不同
+        const timestamp = Date.now()
+        const bgImage = `https://nas.yeyhome.com:295?t=${timestamp}&i=${index}`
 
         return {
           ...cat,
-          styleClass
+          bgImage
         }
       })
 
@@ -233,6 +224,7 @@ Page({
       console.log('========== 开始加载文章 ==========')
       this.setData({ postsLoading: true })
 
+      const app = getApp()
       const { page } = this.data
       console.log('请求页码:', page)
 
@@ -290,6 +282,13 @@ Page({
           }
         }
 
+        // 如果仍然没有缩略图，使用随机图片
+        if (!thumbnail) {
+          const postId = post.cid || post.id || Math.random()
+          thumbnail = `${app.globalData.randomImageUrl}?id=${postId}`
+          console.log(`  使用随机图片:`, thumbnail)
+        }
+
         // 提取摘要
         let excerpt = post.excerpt || post.description || post.summary
         if (!excerpt && post.digest) {
@@ -304,12 +303,13 @@ Page({
           id: post.cid || post.id,
           thumbnail,
           excerpt,
+          views: post.views || 0,
           created: post.date && post.date.year ?
             `${post.date.year}-${post.date.month}-${post.date.day}` :
             post.created
         }
 
-        console.log(`  处理后 - ID: ${processed.id}, 有图: ${!!thumbnail}`)
+        console.log(`  处理后 - ID: ${processed.id}, 有图: ${!!thumbnail}, 阅读量: ${processed.views}`)
         return processed
       })
 
@@ -318,15 +318,8 @@ Page({
       const allPosts = page === 1 ? newPosts : [...this.data.posts, ...newPosts]
       console.log('总文章数量:', allPosts.length)
 
-      // 瀑布流布局
-      console.log('开始瀑布流布局...')
-      const { leftPosts, rightPosts } = this.layoutWaterfall(allPosts)
-      console.log('瀑布流布局完成 - 左列:', leftPosts.length, '右列:', rightPosts.length)
-
       this.setData({
         posts: allPosts,
-        leftPosts,
-        rightPosts,
         page: page + 1,
         hasMore: newPosts.length >= 10,
         postsLoading: false
@@ -364,31 +357,6 @@ Page({
   },
 
   /**
-   * 瀑布流布局算法
-   */
-  layoutWaterfall(posts) {
-    const leftPosts = []
-    const rightPosts = []
-    let leftHeight = 0
-    let rightHeight = 0
-
-    posts.forEach(post => {
-      // 简单的高度估算（实际项目中可能需要更精确的计算）
-      const estimatedHeight = 200 + (post.excerpt ? post.excerpt.length * 0.5 : 0)
-
-      if (leftHeight <= rightHeight) {
-        leftPosts.push(post)
-        leftHeight += estimatedHeight
-      } else {
-        rightPosts.push(post)
-        rightHeight += estimatedHeight
-      }
-    })
-
-    return { leftPosts, rightPosts }
-  },
-
-  /**
    * 查看文章详情
    */
   handlePostTap(e) {
@@ -405,25 +373,15 @@ Page({
     const { id } = e.currentTarget.dataset
     console.log('跳转到分类页面, ID:', id)
 
+    // 将分类ID临时存储，切换到分类tab后读取
+    try {
+      wx.setStorageSync('pendingCategoryId', id)
+    } catch (err) {
+      console.warn('缓存分类ID失败:', err)
+    }
+
     wx.switchTab({
-      url: '/pages/category/category',
-      success: () => {
-        // 通过全局事件传递分类ID
-        setTimeout(() => {
-          const pages = getCurrentPages()
-          const categoryPage = pages[pages.length - 1]
-          if (categoryPage && categoryPage.route === 'pages/category/category') {
-            // 直接调用分类页面的方法来选择分类
-            if (typeof categoryPage.handleCategoryTap === 'function') {
-              categoryPage.handleCategoryTap({
-                currentTarget: {
-                  dataset: { id }
-                }
-              })
-            }
-          }
-        }, 100)
-      }
+      url: '/pages/category/category'
     })
   },
 

@@ -6,11 +6,12 @@
 
     <view wx:elif="{{categories.length}}" class="category-list">
       <view
-        class="category-item {{activeCategory == (item.mid || item.id) ? 'active' : ''}}"
+        class="category-item {{activeCategory == (item.slug || item.mid || item.id) ? 'active' : ''}}"
         wx:for="{{categories}}"
         wx:key="mid"
         bindtap="handleCategoryTap"
-        data-id="{{item.mid || item.id}}"
+        data-id="{{item.slug || item.mid || item.id}}"
+        data-name="{{item.name}}"
       >
         <view class="category-name">{{item.name}}</view>
       </view>

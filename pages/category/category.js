@@ -18,11 +18,32 @@ Page({
   },
 
   onLoad(options) {
-    this.loadCategories()
-
-    // 如果从首页传递了分类ID
-    if (options.id) {
+    // 如果从首页传递了分类ID，先设置，避免竞态
+    if (options && options.id) {
       this.setData({ activeCategory: options.id })
+    }
+    this.loadCategories()
+  },
+
+  onShow() {
+    // 读取从首页缓存的分类ID
+    try {
+      const pendingId = wx.getStorageSync('pendingCategoryId')
+      if (pendingId) {
+        wx.removeStorageSync('pendingCategoryId')
+        // 如果当前分类不同，触发加载
+        if (pendingId != this.data.activeCategory) {
+          this.setData({
+            activeCategory: pendingId,
+            posts: [],
+            page: 1,
+            hasMore: true
+          })
+          this.loadCategoryPosts(pendingId, true)
+        }
+      }
+    } catch (err) {
+      console.warn('读取分类ID缓存失败:', err)
     }
   },
 
@@ -63,7 +84,8 @@ Page({
 
       console.log('解析后的分类数量:', categories.length)
       if (categories.length > 0) {
-        console.log('第一个分类:', categories[0])
+        console.log('第一个分类完整数据:', categories[0])
+        console.log('分类字段 - mid:', categories[0].mid, 'slug:', categories[0].slug, 'name:', categories[0].name)
       }
 
       this.setData({
@@ -73,8 +95,8 @@ Page({
 
       // 如果没有选中分类，默认选中第一个
       if (!this.data.activeCategory && categories.length > 0) {
-        const firstCategoryId = categories[0].mid || categories[0].id || categories[0].cid
-        console.log('自动选中第一个分类, ID:', firstCategoryId)
+        const firstCategoryId = categories[0].slug || categories[0].mid || categories[0].id || categories[0].cid
+        console.log('自动选中第一个分类, ID:', firstCategoryId, '完整数据:', categories[0])
 
         this.setData({ activeCategory: firstCategoryId })
         this.loadCategoryPosts(firstCategoryId, true)
@@ -86,6 +108,10 @@ Page({
     } catch (error) {
       console.error('加载分类失败:', error)
       this.setData({ categoriesLoading: false })
+      wx.showToast({
+        title: '加载失败',
+        icon: 'none'
+      })
     }
   },
 
@@ -123,13 +149,16 @@ Page({
 
     try {
       const page = reset ? 1 : this.data.page
-      console.log(`========== 加载分类 ${categoryId} 的文章 ==========`)
+      console.log(`========== 加载分类文章 ==========`)
+      console.log('分类ID:', categoryId)
       console.log('页码:', page, '是否重置:', reset)
 
       this.setData({ postsLoading: true })
 
+      const app = getApp()
       const res = await api.getCategoryPosts(categoryId, page)
-      console.log('分类文章 API 返回:', res)
+      console.log('分类文章 API 返回完整数据:', res)
+      console.log('API 请求 URL 应该是: /posts?filterType=category&filterSlug=' + categoryId + '&page=' + page + '&pageSize=10')
 
       // 解析数据格式
       let newPosts = []
@@ -165,6 +194,12 @@ Page({
           if (imgMatch && imgMatch[1]) {
             thumbnail = imgMatch[1]
           }
+        }
+
+        // 如果仍然没有缩略图，使用随机图片
+        if (!thumbnail) {
+          const postId = post.cid || post.id || Math.random()
+          thumbnail = `${app.globalData.randomImageUrl}?id=${postId}`
         }
 
         // 提取摘要
