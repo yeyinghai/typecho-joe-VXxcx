@@ -46,7 +46,11 @@
           <text class="meta-item" wx:if="{{item.views}}">👁️ {{item.views}}</text>
         </view>
         <view class="item-footer">
+<<<<<<< HEAD
           <view class="favorite-time">收藏于 {{item.formattedFavoriteTime}}</view>
+=======
+          <view class="favorite-time">收藏于 {{formatDate(item.favoriteTime)}}</view>
+>>>>>>> 54264eccc89a7c93cf0975a89bc887d0dd82989a
         </view>
       </view>
 

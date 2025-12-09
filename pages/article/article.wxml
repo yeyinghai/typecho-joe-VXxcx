@@ -191,7 +191,10 @@
         <view class="copyright-text">本文作者：夜影小窝</view>
         <view class="copyright-text">本文链接：{{articleUrl}}</view>
         <view class="copyright-text">版权声明：本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！</view>
+<<<<<<< HEAD
         <view class="copyright-text">侵权声明：若侵害到您的权利，请您及时联系我，在收到通知后第一时间处理，邮箱ddh6126459@126.com</view>
+=======
+>>>>>>> 54264eccc89a7c93cf0975a89bc887d0dd82989a
       </view>
     </view>
   </view>

@@ -6,7 +6,11 @@ const { copyToClipboard } = require('../../utils/util')
 Page({
   data: {
     // 小程序版本号
+<<<<<<< HEAD
     version: '2.6.0',
+=======
+    version: '2.5.0',
+>>>>>>> 54264eccc89a7c93cf0975a89bc887d0dd82989a
 
     // 个人信息（初始值会被 globalData 覆盖）
     profile: {

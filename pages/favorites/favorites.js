@@ -35,6 +35,7 @@ Page({
     try {
       this.setData({ loading: true })
 
+<<<<<<< HEAD
       const app = getApp()
       const favoritesList = favorites.getFavorites().map(item => {
         // 如果没有缩略图，使用随机图片（与首页保持一致）
@@ -50,6 +51,9 @@ Page({
           formattedFavoriteTime: this.formatDate(item.favoriteTime)
         }
       })
+=======
+      const favoritesList = favorites.getFavorites()
+>>>>>>> 54264eccc89a7c93cf0975a89bc887d0dd82989a
 
       this.setData({
         favoritesList,
